@@ -43,6 +43,7 @@
         <title>Pulse Sprinkler System</title>
     </head>
     <body>
+        <!-- MAIN PAGE -->
         <div data-role="page" data-theme="a" id="mainPage">
             <div data-role="header" id="headerMain">
                <h1>Pulse</h1>
@@ -67,18 +68,16 @@
                         </a>
                     </li>
                     <li>
-                        <a href="settings.html" data-transition="slide">
+                        <a href="#settingsPage" data-transition="slide">
                             <h1 style="color:#ff6a00">SETTINGS</h1>
                             <p style="color:#666666">
-                                Sprinkler configurations.<br />
-                                Synchronize clock.<br />
-                                Add, delete and modify schedules.
+                                Modify sprinkler configurations.
                             </p>
                         </a>
                     </li>
                     <li>
-                        <a href="about.html" data-transition="slide">
-                            <h1 style="color:#009900">ABOUT</h1>
+                        <a href="#aboutPage" data-transition="slide">
+                            <h1 style="color:#444444">ABOUT</h1>
                             <p style="color:#666666">
                                 Information about Pulse sprinkler.
                             </p>
@@ -88,6 +87,7 @@
             </div>
         </div>
 
+        <!-- CONNECT PAGE -->
         <div data-role="page" data-split-icon="gear" data-split-theme="c" id="connectPage">
             <div data-role="header" id="headerConnect" data-add-back-btn="true">
                 <h1>Connect</h1>
@@ -99,8 +99,51 @@
             </div>
         </div>
 
+        <!-- SETTINGS PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="settingsPage">
+            <div data-role="header" id="headerSettings" data-add-back-btn="true">
+                <h1>Settings</h1>
+            </div>
+
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="gear" data-split-theme="c" id="settingsListView">
+                    <li>
+                        <h1 style="color:#009900">RUN</h1>
+                        <p style="color:#666666">
+                            Put sprinkler in Run mode.
+                        </p>
+                    </li>
+                    <li>
+                        <h1 style="color:#cc0000">STOP</h1>
+                        <p style="color:#666666">
+                            Stop sprinkler from executing schedules.
+                        </p>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <h1 style="color:#ff6a00">MANAGE SCHEDULES</h1>
+                            <p style="color:#666666">
+                                Add, Modify and Delete schedules.
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="aboutPage">
+            <div data-role="header" id="headerAbout" data-add-back-btn="true">
+                <h1>About</h1>
+            </div>
+
+            <div data-role="content">
+                About Content here!!!
+            </div>
+        </div>
+
         <script type="text/javascript">
-            var app = new appClass();
+            var app = new application();
             app.initialize();
         </script>
     </body>

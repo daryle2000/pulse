@@ -18,7 +18,7 @@
  */
 
 
-function appClass() {
+function application() {
     this.bluetoothObj = null;
     var _self = this;
     
@@ -27,16 +27,88 @@ function appClass() {
     }
 
     this.onDeviceReady = function () {
-        _self.bluetoothObj = new bluetooth($('#connectListView'));
-        _self.bluetoothObj.init();
+        try
+        {
+            _self.updateStatus();
 
-        // Event when Connect item is clicked
-        $(document).on('pageshow', '#connectPage', function (event, ui) {
-            _self.scanConnections();
-        });
+            _self.bluetoothObj = new bluetooth($('#connectListView'));
+            _self.bluetoothObj.init();
+
+            // Event when Connect item is clicked
+            $(document).on('pageshow', '#connectPage', function (event, ui) {
+                _self.onConnectPageLoad();
+            });
+
+            StatusBar.show();
+            StatusBar.overlaysWebView(false);
+            StatusBar.backgroundColorByHexString("#4444ff");
+        }
+        catch (e) {
+        }
     }
+
+    this.updateStatus = function () {
+        var statClockObj = $('#clock');
+        statClockObj.html (_self.getDate() + ' ' + _self.getTime() + ' (Runtime hh:mm)');
+    }
+
+    this.onConnectPageLoad = function () {
+        _self.scanConnections();
+    }
+
+    // -------------------------------------------------------------------------------------------
+    // Bluetooth Functions
+    // -------------------------------------------------------------------------------------------
 
     this.scanConnections = function () {
         _self.bluetoothObj.scan();
+    }
+
+    // -------------------------------------------------------------------------------------------
+    // Essential Functions
+    // -------------------------------------------------------------------------------------------
+
+    this.getDate = function () {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; 
+
+        var yyyy = today.getFullYear();
+        if (dd < 10)
+            dd = '0' + dd;
+        if (mm < 10)
+            mm = '0' + mm;
+
+        return mm + '-' + dd + '-' + yyyy;
+    }
+
+    this.getTime = function () {
+        var now = new Date();
+        var hrs = now.getHours();
+        var min = now.getMinutes();
+
+        if (hrs < 10)
+            hrs = '0' + hrs;
+
+        if (min < 10)
+            min = '0' + min;
+
+        return hrs + ':' + min;
+    }
+
+    this.getDeviceType = function () {
+        if (navigator.userAgent.match(/iPad/i) == "iPad")
+            return "ipad";
+        
+        if (navigator.userAgent.match(/iPhone/i) == "iPhone")
+            return "iphone";
+
+        if (navigator.userAgent.match(/Android/i) == "Android")
+            return "android";
+
+        if (navigator.userAgent.match(/BlackBerry/i) == "BlackBerry")
+            return "blackBerry";
+
+        return "undetected";
     }
 }

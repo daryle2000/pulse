@@ -27,6 +27,7 @@
     <gap:plugin name="org.apache.cordova.device-orientation" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="com.megster.cordova.bluetoothserial"/>
+    <gap:plugin name="org.apache.cordova.statusbar" />
   
     <!--
     <gap:plugin name="org.apache.cordova.battery-status" />
