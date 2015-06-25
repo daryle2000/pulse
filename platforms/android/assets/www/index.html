@@ -107,16 +107,10 @@
 
             <div data-role="content">
                 <ul data-role="listview" data-split-icon="gear" data-split-theme="c" id="settingsListView">
-                    <li>
-                        <h1 style="color:#009900">RUN</h1>
-                        <p style="color:#666666">
+                    <li onclick="app.executeMode()">
+                        <h2 id="executeLabel" style="color:#009900">RUN</h2>
+                        <p id="executeMessage" style="color:#666666">
                             Put sprinkler in Run mode.
-                        </p>
-                    </li>
-                    <li>
-                        <h1 style="color:#cc0000">STOP</h1>
-                        <p style="color:#666666">
-                            Stop sprinkler from executing schedules.
                         </p>
                     </li>
                     <li>

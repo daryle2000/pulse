@@ -20,6 +20,11 @@
 
 function application() {
     this.bluetoothObj = null;
+
+    this.isRunning = false;
+    this.executeLabelObj = $('#executeLabel');
+    this.executeMessageObj = $('#executeMessage');
+
     var _self = this;
     
     this.initialize = function () {
@@ -48,8 +53,16 @@ function application() {
     }
 
     this.updateStatus = function () {
+        // ---
+        // update clock/time
+        // ---
         var statClockObj = $('#clock');
-        statClockObj.html (_self.getDate() + ' ' + _self.getTime() + ' (Runtime hh:mm)');
+        statClockObj.html(_self.getDate() + ' ' + _self.getTime() + ' (Runtime hh:mm)');
+
+        // ---
+        // update schedule status
+        // ---
+        _self.executeUpdateDisplay();
     }
 
     this.onConnectPageLoad = function () {
@@ -62,6 +75,43 @@ function application() {
 
     this.scanConnections = function () {
         _self.bluetoothObj.scan();
+    }
+
+    // -------------------------------------------------------------------------------------------
+    // Sprinkler Functions
+    // -------------------------------------------------------------------------------------------
+    this.executeMode = function () {
+        if (_self.isRunning)
+            _self.stop();
+        else
+            _self.run();
+
+        _self.executeUpdateDisplay();
+    }
+
+    this.run = function () {
+        _self.isRunning = true;
+        // run here
+    }
+
+    this.stop = function () {
+        _self.isRunning = false;
+        // stop here
+    }
+
+    this.executeUpdateDisplay = function () {
+        _self.executeLabelObj.css('font-size', '30px');
+
+        if (_self.isRunning) {
+            _self.executeLabelObj.css('color', '#bb0000');
+            _self.executeLabelObj.html('STOP');
+            _self.executeMessageObj.html('Sprinkler is currently running.<br>Stop sprinkler from running saved schedules.');
+        }
+        else {
+            _self.executeLabelObj.css('color', '#009900');
+            _self.executeLabelObj.html('RUN');
+            _self.executeMessageObj.html('Sprinkler is current stopped.<br>Run/Monitor sprinkler schedules.');
+        }
     }
 
     // -------------------------------------------------------------------------------------------
