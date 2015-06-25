@@ -29,6 +29,11 @@ function appClass() {
     this.onDeviceReady = function () {
         _self.bluetoothObj = new bluetooth($('#connectListView'));
         _self.bluetoothObj.init();
+
+        // Event when Connect item is clicked
+        $(document).on('pageshow', '#connectPage', function (event, ui) {
+            _self.scanConnections();
+        });
     }
 
     this.scanConnections = function () {
