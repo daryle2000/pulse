@@ -45,11 +45,19 @@
     <body>
         <div data-role="page" data-theme="a" id="mainPage">
             <div data-role="header" id="headerMain">
-               <h1>Pulse Sprinkler System</h1>
+               <h1>Pulse</h1>
             </div>
 
             <div data-role="content">
                 <ul data-role="listview" data-split-icon="arrow-r" data-split-theme="c" id="mainListView">
+                    <li style="background-color:#ffffdd">
+                        <h1 style="color:#444444">Sprinkler System Information</h1>
+                        <p>
+                            <span id="bindto" style="color:#0000ff">Connected to BT Name (Running/Stopped)</span><br />
+                            <span id="clock" style="color:#0000ff">Current Date/Time (Runtime in Days:Hours)</span><br />
+                            <span id="version" style="color:#0000ff">Firmware Version</span>
+                        </p>
+                    </li>
                     <li>
                         <a href="#connectPage" data-transition="slide">
                             <h1 style="color:#0000ff">CONNECT</h1>
@@ -76,21 +84,11 @@
                             </p>
                         </a>
                     </li>
-                    <li style="background-color:#ffffdd">
-                        <h1 style="color:#444444">STATUS</h1>
-                        <p>
-                            <span id="bindto" style="color:#0000ff">Bind to BT Name</span><br />
-                            <span id="status" style="color:#0000ff">Running/Stopped</span><br />
-                            <span id="clock" style="color:#0000ff">Current Date/Time</span><br />
-                            <span id="runtime" style="color:#0000ff">Runtime in Days:Hours</span><br />
-                            <span id="version" style="color:#0000ff">Firmware Version</span>
-                        </p>
-                    </li>
                 </ul>
             </div>
         </div>
 
-        <div data-role="page" data-theme="a" id="connectPage">
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="connectPage">
             <div data-role="header" id="headerConnect" data-add-back-btn="true">
                 <h1>Connect</h1>
             </div>
