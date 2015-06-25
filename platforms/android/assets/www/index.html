@@ -33,20 +33,22 @@
         <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
         <script type="text/javascript" src="cordova.js"></script>
+
+        <script type="text/javascript" src="js/bluetooth.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
 
         <title>Pulse Sprinkler System</title>
     </head>
     <body>
         <div data-role="page" data-theme="a" id="mainPage">
-            <div data-role="header" id="headerMain" data-nobackbtn="true">
+            <div data-role="header" id="headerMain">
                <h1>Pulse Sprinkler System</h1>
             </div>
 
             <div data-role="content">
-                <ul data-role="listview" data-split-icon="arrow-r" data-split-theme="c" id="mainTask">
+                <ul data-role="listview" data-split-icon="arrow-r" data-split-theme="c" id="mainListView" onclick="app.scanConnections();">
                     <li>
-                        <a href="connect.html">
+                        <a href="connect.html" data-transition="slide">
                             <h1 style="color:#0000ff">CONNECT</h1>
                             <p style="color:#666666">
                                 Connect to Pulse sprinkler bluetooth portal.
@@ -54,7 +56,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="settings.html">
+                        <a href="settings.html" data-transition="slide">
                             <h1 style="color:#ff6a00">SETTINGS</h1>
                             <p style="color:#666666">
                                 Sprinkler configurations.<br />
@@ -64,20 +66,31 @@
                         </a>
                     </li>
                     <li>
-                        <a href="about.html">
+                        <a href="about.html" data-transition="slide">
                             <h1 style="color:#009900">ABOUT</h1>
                             <p style="color:#666666">
                                 Information about Pulse sprinkler.
                             </p>
                         </a>
                     </li>
+                    <li style="background-color:#ffffdd">
+                        <h1 style="color:#444444">STATUS</h1>
+                        <p>
+                            <span id="bindto" style="color:#0000ff">Bind to BT Name</span><br />
+                            <span id="status" style="color:#0000ff">Running/Stopped</span><br />
+                            <span id="clock" style="color:#0000ff">Current Date/Time</span><br />
+                            <span id="runtime" style="color:#0000ff">Runtime in Days:Hours</span><br />
+                            <span id="version" style="color:#0000ff">Firmware Version</span>
+                        </p>
+                    </li>
                 </ul>
             </div>
+
+            
         </div>
 
-        
-
         <script type="text/javascript">
+            var app = new appClass();
             app.initialize();
         </script>
     </body>

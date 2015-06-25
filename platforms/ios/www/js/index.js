@@ -16,15 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-function app ()
-{
-    var _self = this;
 
+
+function appClass() {
+    this.bluetoothObj = null;
+    var _self = this;
+    
     this.initialize = function () {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     }
 
     this.onDeviceReady = function () {
+        _self.bluetoothObj = new bluetooth($('#connectListView'));
+        _self.bluetoothObj.init();
+    }
 
+    this.scanConnections = function () {
+        _self.bluetoothObj.scan();
     }
 }
