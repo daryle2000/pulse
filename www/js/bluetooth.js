@@ -27,7 +27,7 @@ function bluetooth(jqm_listview)
         _self.listviewObj.empty()
 
         for (var idx = 0; idx < result.length; idx++) {
-            itemContent = '<h1>' + result[idx].name + '</h1><br>' + '<span style="color:#aa0000">' + result[idx].id + '</span>';
+            itemContent = '<h1>' + result[idx].name + '</h1>' + '<span style="color:#aa0000">' + result[idx].id + '</span>';
             itemHandler = 'alert("' + result[idx].id + '");';
             itemToAdd = '<li onclick=' + itemHandler + '>' + itemContent + '</li>';
             _self.listviewObj.append(itemToAdd);
