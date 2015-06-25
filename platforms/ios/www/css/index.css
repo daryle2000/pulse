@@ -7,3 +7,7 @@
     padding-left:10px;
     padding-right:-20px;
 }
+
+.wrap {
+    white-space: normal !important;
+}

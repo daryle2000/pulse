@@ -105,12 +105,12 @@ function application() {
         if (_self.isRunning) {
             _self.executeLabelObj.css('color', '#bb0000');
             _self.executeLabelObj.html('STOP');
-            _self.executeMessageObj.html('Sprinkler is currently running.<br>Stop sprinkler from running saved schedules.');
+            _self.executeMessageObj.html('Sprinkler is currently running. Stop sprinkler from running saved schedules.');
         }
         else {
             _self.executeLabelObj.css('color', '#009900');
             _self.executeLabelObj.html('RUN');
-            _self.executeMessageObj.html('Sprinkler is current stopped.<br>Run/Monitor sprinkler schedules.');
+            _self.executeMessageObj.html('Sprinkler is current stopped. Run/Monitor sprinkler schedules.');
         }
     }
 
