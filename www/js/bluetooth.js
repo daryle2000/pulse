@@ -4,6 +4,7 @@ function bluetooth(jqm_listview)
     this.listviewObj = jqm_listview;
     this.isScanning = false;
     this.isInitialized = false;
+    this.bluetoothAddresses = [];
 
     this.postMessage = function (msg) {
         alert(msg);
@@ -29,7 +30,7 @@ function bluetooth(jqm_listview)
             if (_self.isScanning)
                 _self.stopScan();
 
-            _self.postMessage('scanning bluetooth ...');
+            _self.bluetoothAddresses.length = 0;    // clear array
             _self.listviewObj.empty();
 
             var paramsObj = { serviceUuids: [] };
@@ -41,14 +42,12 @@ function bluetooth(jqm_listview)
     }
 
     this.startScanSuccess = function (result) {
-        _self.postMessage('Start Scan Success : ' + JSON.stringify(result));
-
         if (result.status == 'scanStarted')
         {
             _self.isScanning = true;
             setTimeout (function () {
                 _self.stopScan();
-            }, 30000);  // if scanning, stop after 30 seconds
+            }, 15000);  // if scanning, stop after 30 seconds
         }
 
         if (result.status = 'scanResult')
@@ -61,8 +60,14 @@ function bluetooth(jqm_listview)
             "address": "ECC037FD-72AE-AFC5-9213-CA785B3B5C63"
             */
 
-            var itemContent = '<h1>' + result.name + '</h1>' + '<span style="color:#aa0000">(' + result.advertisement + ')</span>' +
-                              'rssi: ' + result.rssi + ' ' +
+            if (_self.bluetoothAddresses.indexOf(result.address) >= 0)  // disregard if device already exist
+                return;
+
+            _self.bluetoothAddresses.push(result.address);  // add bluetooth address
+
+            var itemContent = '<h1>' + result.name + '</h1><br>' +
+                              'advertisement: ' + result.advertisement + '<br>' +
+                              'rssi: ' + result.rssi + '<br>' +
                               'address: ' + result.address;
 
             var itemHandler = 'alert("' + result.name + '");';
