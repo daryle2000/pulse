@@ -31,7 +31,7 @@
     <preference name="android-installLocation" value="auto" />
     <gap:plugin name="org.apache.cordova.device-orientation" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
-    <gap:plugin name="com.megster.cordova.bluetoothserial" />
+    <gap:plugin name="com.randdusing.bluetoothle" />
     <gap:plugin name="org.apache.cordova.statusbar" />
     <icon src="icon.png" />
     <icon gap:platform="android" gap:qualifier="ldpi" src="www/res/icon/android/icon-36-ldpi.png" />
