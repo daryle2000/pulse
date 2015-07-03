@@ -41,6 +41,7 @@ function application() {
 
             // Event when Connect item is clicked
             $(document).on('pageshow', '#connectPage', function (event, ui) {
+                _self.bluetoothObj.postMessage('Scanning page is loading ...');
                 _self.onConnectPageLoad();
             });
 
