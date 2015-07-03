@@ -10,6 +10,7 @@ function bluetooth(jqm_listview)
     }
 
     this.init = function () {
+        _self.postMessage('initializing bluetooth!!!');
         var paramsObj = { request: true };
         bluetoothle.initialize(_self.initializeSuccess, _self.initializeError, params);
     }
@@ -27,9 +28,10 @@ function bluetooth(jqm_listview)
             if (_self.isScanning)
                 _self.stopScan();
 
-            var paramsObj = { serviceUuids: [] };
-
+            _self.postMessage('scanning bluetooth ...');
             _self.listviewObj.empty();
+
+            var paramsObj = { serviceUuids: [] };
             bluetoothle.startScan(_self.startScanSuccess, _self.startScanError, paramsObj);
         }
         catch (e) {
@@ -38,6 +40,7 @@ function bluetooth(jqm_listview)
     }
 
     this.startScanSuccess = function (result) {
+        _self.postMessage('Start Scan Success : ' + JSON.stringify(result));
 
         if (result.status == 'scanStarted')
         {
@@ -70,7 +73,7 @@ function bluetooth(jqm_listview)
     }
 
     this.startScanError = function (error) {
-        _self.postMessage('Start Scan Error : ' + JSON.stringify(obj));
+        _self.postMessage('Start Scan Error : ' + JSON.stringify(error));
     }
 
     this.stopScan = function () {
