@@ -46,7 +46,6 @@ function application() {
 
             // Event when Connect page is closing
             $(document).on('pagehide', '#connectPage', function (event, ui) {
-                _self.bluetoothObj.postMessage('Scanning BT will stop!');
                 _self.stopScanningDevices();
             });
 
