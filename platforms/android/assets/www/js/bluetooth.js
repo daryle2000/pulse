@@ -16,10 +16,11 @@ function bluetooth(jqm_listview)
     }
 
     this.initializeSuccess = function (result) {
-        _self.postMessage('BLE 4.0 Initialization Success!!!');
+        _self.isInitialized = true;
     }
 
     this.initializeError = function (result) {
+        _self.isInitialized = false;
         _self.postMessage("Initialize Error : " + JSON.stringify(result));
     }
 
@@ -64,9 +65,8 @@ function bluetooth(jqm_listview)
             _self.bluetoothAddresses.push(result.address);  // add bluetooth address
 
             var itemContent = '<h1>' + result.name + '</h1>' +
-                              'advertisement: ' + result.advertisement + '<br>' +
-                              'rssi: ' + result.rssi + '<br>' +
-                              'address: ' + result.address;
+                              'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
+                              'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
             var itemHandler = 'alert("' + result.name + '");';
             var itemToAdd = '<li class=\'wrap\' + onclick=' + itemHandler + '>' + itemContent + '</li>';
