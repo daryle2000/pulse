@@ -11,7 +11,8 @@ function bluetooth(jqm_listview)
 
     this.init = function () {
         _self.postMessage('initializing bluetooth!!!');
-        var paramsObj = { request: true };
+
+        var params = { request: true };
         bluetoothle.initialize(_self.initializeSuccess, _self.initializeError, params);
     }
 
