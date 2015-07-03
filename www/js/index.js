@@ -50,6 +50,7 @@ function application() {
             StatusBar.backgroundColorByHexString("#4444ff");
         }
         catch (e) {
+            _self.bluetoothObj.postMessage(e);
         }
     }
 
