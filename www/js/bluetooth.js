@@ -11,14 +11,12 @@ function bluetooth(jqm_listview)
     }
 
     this.init = function () {
-        _self.postMessage('initializing bluetooth!!!');
-
         var params = { request: true };
         bluetoothle.initialize(_self.initializeSuccess, _self.initializeError, params);
     }
 
     this.initializeSuccess = function (result) {
-        _self.postMessage("Initialize Success : " + JSON.stringify(result));
+        _self.postMessage('BLE 4.0 Initialization Success!!!');
     }
 
     this.initializeError = function (result) {
@@ -50,7 +48,7 @@ function bluetooth(jqm_listview)
             }, 15000);  // if scanning, stop after 30 seconds
         }
 
-        if (result.status = 'scanResult')
+        if (result.status = 'scanResult' && result.address != undefined)
         {
             /*
             "status": "scanResult",
@@ -65,13 +63,13 @@ function bluetooth(jqm_listview)
 
             _self.bluetoothAddresses.push(result.address);  // add bluetooth address
 
-            var itemContent = '<h1>' + result.name + '</h1><br>' +
+            var itemContent = '<h1>' + result.name + '</h1>' +
                               'advertisement: ' + result.advertisement + '<br>' +
                               'rssi: ' + result.rssi + '<br>' +
                               'address: ' + result.address;
 
             var itemHandler = 'alert("' + result.name + '");';
-            var itemToAdd = '<li onclick=' + itemHandler + '>' + itemContent + '</li>';
+            var itemToAdd = '<li class=\'wrap\' + onclick=' + itemHandler + '>' + itemContent + '</li>';
             _self.listviewObj.append(itemToAdd);
 
             _self.listviewObj.listview('refresh');
