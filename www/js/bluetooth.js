@@ -43,7 +43,7 @@ function bluetooth(jqm_listview)
         if (result.status == 'scanStarted')
         {
             _self.isScanning = true;
-            setTimeout (function () {
+            setTimeout(function () {
                 _self.stopScan();
             }, 15000);  // if scanning, stop after 30 seconds
         }
@@ -81,11 +81,14 @@ function bluetooth(jqm_listview)
     }
 
     this.stopScan = function () {
-        bluetoothle.stopScan(_self.stopScanSuccess, _self.stopScanError);
+        if (_self.isScanning) {
+            _self.isScanning = false;
+            bluetoothle.stopScan(_self.stopScanSuccess, _self.stopScanError);
+        }
     }
 
     this.stopScanSuccess = function () {
-        _self.isScanning = true;
+        _self.postMessage('Scanning has stopped!');
     }
 
     this.stopScanError = function () {

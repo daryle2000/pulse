@@ -44,6 +44,12 @@ function application() {
                 _self.onConnectPageLoad();
             });
 
+            // Event when Connect page is closing
+            $(document).on('pagehide', '#connectPage', function (event, ui) {
+                _self.bluetoothObj.postMessage('Scanning BT will stop!');
+                _self.stopScanningDevices();
+            });
+
             StatusBar.show();
             StatusBar.overlaysWebView(false);
             StatusBar.backgroundColorByHexString("#4444ff");
@@ -67,15 +73,19 @@ function application() {
     }
 
     this.onConnectPageLoad = function () {
-        _self.scanConnections();
+        _self.scanDevices();
     }
 
     // -------------------------------------------------------------------------------------------
     // Bluetooth Functions
     // -------------------------------------------------------------------------------------------
 
-    this.scanConnections = function () {
+    this.scanDevices = function () {
         _self.bluetoothObj.scan();
+    }
+
+    this.stopScanningDevices = function () {
+        _self.bluetoothObj.stopScan();
     }
 
     // -------------------------------------------------------------------------------------------
