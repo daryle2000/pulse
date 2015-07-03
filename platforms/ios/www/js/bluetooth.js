@@ -5,6 +5,7 @@ function bluetooth(jqm_listview)
     this.isScanning = false;
     this.isInitialized = false;
     this.bluetoothAddresses = [];
+    this.bluetoothSelectedDeviceAddress = '';
 
     this.postMessage = function (msg) {
         alert(msg);
@@ -24,13 +25,25 @@ function bluetooth(jqm_listview)
         _self.postMessage("Initialize Error : " + JSON.stringify(result));
     }
 
+    this.clearDeviceList = function () {
+        _self.bluetoothAddresses.length = 0;    // clear array
+        _self.listviewObj.empty();
+    }
+
+    this.setSelectedDevice = function (deviceAddress) {
+        _self.bluetoothSelectedDeviceAddress = deviceAddress;
+    }
+
+    this.getSelectedDevice = function () {
+        return _self.bluetoothSelectedDeviceAddress;
+    }
+
     this.scan = function () {
         try {
             if (_self.isScanning)
                 _self.stopScan();
 
-            _self.bluetoothAddresses.length = 0;    // clear array
-            _self.listviewObj.empty();
+            _self.clearDeviceList();
 
             var paramsObj = { serviceUuids: [] };
             bluetoothle.startScan(_self.startScanSuccess, _self.startScanError, paramsObj);
@@ -68,7 +81,7 @@ function bluetooth(jqm_listview)
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
-            var itemHandler = 'alert("' + result.name + '");';
+            var itemHandler = '_self.setSelectedDevice(\'' + result.address + '\'; alert("' + result.name + '");';
             var itemToAdd = '<li class=\'wrap\' + onclick=' + itemHandler + '>' + itemContent + '</li>';
             _self.listviewObj.append(itemToAdd);
 
