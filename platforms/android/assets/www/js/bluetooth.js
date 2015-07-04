@@ -81,7 +81,7 @@ function bluetooth(jqm_listview)
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
-            var itemHandler = '_self.setSelectedDevice(' + index + ')';
+            var itemHandler = 'alert(' + index.toString() + ');';
             var itemToAdd = '<li class=\'wrap\' + onclick=' + itemHandler + '>' + itemContent + '</li>';
             _self.listviewObj.append(itemToAdd);
 
