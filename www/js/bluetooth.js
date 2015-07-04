@@ -110,6 +110,8 @@ function bluetooth(jqm_listview)
     this.selectBluetoothDevice = function (deviceAddress, deviceName) {
         navigator.notification.prompt('Connect to ' + deviceName + '? Enter PIN below.',
             function (result) {
+                _self.postMessage(result.buttonIndex.toString());
+
                 if (result.buttonIndex == 1) {
                     _self.bluetoothSelectedDeviceAddress = deviceAddress;
                     _self.bluetoothSelectedDeviceName = deviceName; 
