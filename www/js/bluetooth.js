@@ -76,14 +76,16 @@ function bluetooth(jqm_listview)
                 return;
 
             var index = _self.bluetoothAddresses.push(result.address) - 1;  // add bluetooth address
+            var deviceId = 'device_' + index.toString();
 
             var itemContent = '<h1>' + result.name + '</h1>' +
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
-            var itemHandler = '_self.selectBluetoothDevice(' + index.toString() + ');';
-            var itemToAdd = '<li class=\'wrap\' onclick=' + itemHandler + '>' + itemContent + '</li>';
-            _self.listviewObj.append(itemToAdd);
+            var itemToAdd = '<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>';
+            _self.listviewObj.append(itemToAdd).click(function () {
+                _self.selectBluetoothDevice(index);
+            });
 
             _self.listviewObj.listview('refresh');
         }
