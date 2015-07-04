@@ -72,21 +72,26 @@ function bluetooth(jqm_listview)
             "address": "ECC037FD-72AE-AFC5-9213-CA785B3B5C63"
             */
 
-            if (_self.bluetoothAddresses.indexOf(result.address) >= 0)  // disregard if device already exist
+            if (_self.bluetoothAddresses.indexOf(result.address) >= 0)      // disregard if device already exist
                 return;
 
-            _self.bluetoothAddresses.push(result.address);  // add bluetooth address
+            var index = _self.bluetoothAddresses.push(result.address) - 1;  // add bluetooth address
 
             var itemContent = '<h1>' + result.name + '</h1>' +
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
-            var itemHandler = '_self.setSelectedDevice(\'' + result.address + '\'; alert("' + result.name + '");';
+            var itemHandler = '_self.setSelectedDevice(' + index + ')';
             var itemToAdd = '<li class=\'wrap\' + onclick=' + itemHandler + '>' + itemContent + '</li>';
             _self.listviewObj.append(itemToAdd);
 
             _self.listviewObj.listview('refresh');
         }
+    }
+
+    this.selectBluetoothDevice = function (index) {
+        _self.setSelectedDevice = _self.bluetoothAddresses[index];
+        _self.postMessage('Selected device is ' + _self.setSelectedDevice);
     }
 
     this.startScanError = function (error) {
