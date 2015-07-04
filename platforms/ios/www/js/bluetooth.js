@@ -77,13 +77,13 @@ function bluetooth(jqm_listview)
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
-            var itemToAdd = '<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>';
+            var itemObject = $('<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>');
+            _self.listviewObj.append(itemObject);
 
-            var deviceItem = _self.listviewObj.append(itemToAdd);
-            var statusObject = deviceItem.append('<span>Status</span>');
+            var statusObject = itemObject.append('<span>Status</span>');
 
-            deviceItem.unbind('click');
-            deviceItem.click(function () {
+            itemObject.unbind('click');
+            itemObject.click(function () {
                 _self.selectBluetoothDevice(result.address, result.name, statusObject);
             });
 
