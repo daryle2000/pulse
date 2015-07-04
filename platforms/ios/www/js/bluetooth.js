@@ -83,7 +83,10 @@ function bluetooth(jqm_listview)
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
             var itemToAdd = '<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>';
-            _self.listviewObj.append(itemToAdd).click(function () {
+
+            var deviceItem = _self.listviewObj.append(itemToAdd);
+            deviceItem.unbind();
+            deviceItem.click(function () {
                 _self.selectBluetoothDevice(index);
             });
 
