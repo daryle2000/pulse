@@ -126,7 +126,7 @@ function bluetooth(jqm_listview)
     }
 
     this.connectBluetoothDevice = function () {
-        _self.postMessage('Connecting to ' + deviceName);
+        _self.postMessage('Connecting to ' + _self.bluetoothSelectedDeviceName);
 
         var param = { address: _self.bluetoothSelectedDeviceAddress };
         bluetoothle.connect(_self.connectSuccess, _self.connectError, param);

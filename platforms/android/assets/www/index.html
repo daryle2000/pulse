@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
+
+        <link rel="stylesheet" type="text/css" href="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+        <script type="text/javascript" src="cordova.js"></script>
+
+        <script type="text/javascript" src="js/bluetooth.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+
+        <title>Pulse Sprinkler System</title>
+    </head>
+    <body>
+        <!-- MAIN PAGE -->
+        <div data-role="page" data-theme="a" id="mainPage">
+            <div data-role="header" id="headerMain">
+               <h1>Pulse</h1>
+            </div>
+
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="arrow-r" data-split-theme="c" id="mainListView">
+                    <li style="background-color:#ffffdd">
+                        <h1 style="color:#444444">Sprinkler System Information</h1>
+                        <p>
+                            <span id="bindto" style="color:#0000ff">Connected to BT Name (Running/Stopped)</span><br />
+                            <span id="clock" style="color:#0000ff">Current Date/Time (Runtime in Days:Hours)</span><br />
+                            <span id="version" style="color:#0000ff">Firmware Version</span>
+                        </p>
+                    </li>
+                    <li>
+                        <a href="#connectPage" data-transition="slide">
+                            <h1 style="color:#0000ff">CONNECT</h1>
+                            <p class="wrap" style="color:#666666">
+                                Connect to Pulse sprinkler bluetooth portal.
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settingsPage" data-transition="slide">
+                            <h1 style="color:#ff6a00">SETTINGS</h1>
+                            <p class="wrap" style="color:#666666">
+                                Modify sprinkler configurations.
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#aboutPage" data-transition="slide">
+                            <h1 style="color:#444444">ABOUT</h1>
+                            <p class="wrap" style="color:#666666">
+                                Information about Pulse sprinkler.
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CONNECT PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="connectPage">
+            <div data-role="header" id="headerConnect" data-add-back-btn="true">
+                <h1>Connect</h1>
+            </div>
+
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="gear" data-split-theme="c" id="connectListView">
+                </ul>
+            </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="settingsPage">
+            <div data-role="header" id="headerSettings" data-add-back-btn="true">
+                <h1>Settings</h1>
+            </div>
+
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="gear" data-split-theme="c" id="settingsListView">
+                    <li onclick="app.executeMode()">
+                        <h2 id="executeLabel" style="color:#009900">RUN</h2>
+                        <p class="wrap" id="executeMessage" style="color:#666666">
+                            Put sprinkler in Run mode.
+                        </p>
+                    </li>
+                    <li>
+                        <a href="#manageSchedulesPage" data-transition="slide">
+                            <h1 style="color:#ff6a00">MANAGE SCHEDULES</h1>
+                            <p class="wrap" style="color:#666666">
+                                Add, Modify and Delete schedules.
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="aboutPage">
+            <div data-role="header" id="headerAbout" data-add-back-btn="true">
+                <h1>About</h1>
+            </div>
+
+            <div data-role="content">
+                About Content here!!!
+            </div>
+        </div>
+
+        <!-- MANAGE SCHEDULES PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="manageSchedulesPage">
+            <div data-role="header" data-add-back-btn="true">
+                <h1>Schedules</h1>
+            </div>
+
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="gear" data-split-theme="c" id="listviewManageSchedules">
+                    <li>
+                        <a href="#addSchedules" data-transition="slide">
+                            <h1 style="color:#ff6a00">ADD, INSERT, DELETE</h1>
+                            <p class="wrap" style="color:#666666">
+                                Add, Insert and Delete schedules.
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-transition="slide">
+                            <h1 style="color:#bb0000">SYNCHRONIZE</h1>
+                            <p class="wrap" style="color:#666666">
+                                Copy schedules save in this device to the connected sprinkler.
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-transition="slide">
+                            <h1 style="color:#bb0000">RESTORE</h1>
+                            <p class="wrap" style="color:#666666">
+                                Download schedules from Sprinkler to this device.
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ADD SCHEDULES PAGE -->
+        <div data-role="page" data-split-icon="gear" data-split-theme="c" id="addSchedules">
+            <div data-role="header" id="headerManageSchedules" data-add-back-btn="true">
+                <h1>Schedules</h1>
+            </div>
+
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="gear" data-split-theme="c" id="listviewSchedules">
+                </ul>
+            </div>
+
+            <div data-role="footer" data-position="fixed" style="text-align:center">
+                <div data-role="controlgroup" data-type="horizontal">
+                    <button data-icon="ui-btn ui-icon-plus ui-btn-icon-left">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var app = new application();
+            app.initialize();
+        </script>
+    </body>
+</html>
