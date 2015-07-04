@@ -85,7 +85,7 @@ function bluetooth(jqm_listview)
             var itemToAdd = '<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>';
 
             var deviceItem = _self.listviewObj.append(itemToAdd);
-            deviceItem.unbind();
+            deviceItem.unbind('click');
             deviceItem.click(function () {
                 _self.selectBluetoothDevice(index);
             });
