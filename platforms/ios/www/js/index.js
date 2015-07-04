@@ -47,6 +47,7 @@ function application() {
             // Event when Connect page is closing
             $(document).on('pagehide', '#connectPage', function (event, ui) {
                 _self.stopScanningDevices();
+
             });
 
             StatusBar.show();

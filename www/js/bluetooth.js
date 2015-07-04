@@ -8,7 +8,7 @@ function bluetooth(jqm_listview)
     this.bluetoothSelectedDeviceAddress = '';
 
     this.postMessage = function (msg) {
-        alert(msg);
+        navigator.notification.alert(msg, null, 'Notification');
     }
 
     this.init = function () {
@@ -87,16 +87,22 @@ function bluetooth(jqm_listview)
             var deviceItem = _self.listviewObj.append(itemToAdd);
             deviceItem.unbind('click');
             deviceItem.click(function () {
-                _self.selectBluetoothDevice(index);
+                _self.selectBluetoothDevice(result.address, result.name);
             });
 
             _self.listviewObj.listview('refresh');
         }
     }
 
-    this.selectBluetoothDevice = function (index) {
-        _self.setSelectedDevice = _self.bluetoothAddresses[index];
-        _self.postMessage('Selected device is ' + _self.setSelectedDevice);
+    this.selectBluetoothDevice = function (deviceAddress, deviceName) {
+        navigator.notification.prompt('Connect to ' + device + '? Enter PIN below.',
+            function (result) {
+            _self.setSelectedDevice = deviceAddress;
+            _self.postMessage('Selected device is ' + _self.setSelectedDevice);
+            },
+            'BLE Connect',
+            ['Connect', 'Cancel'],
+            '000000');
     }
 
     this.startScanError = function (error) {
