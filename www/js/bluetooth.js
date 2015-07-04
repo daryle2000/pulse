@@ -4,10 +4,13 @@ function bluetooth(jqm_listview)
     this.listviewObj = jqm_listview;
     this.isScanning = false;
     this.isInitialized = false;
+
+    this.isConnected = false;
     this.bluetoothAddresses = [];
     this.bluetoothSelectedDeviceAddress = '';
     this.bluetoothSelectedDeviceName = '';
     this.pin = '';
+
     this.statusObject = null;
 
     this.postMessage = function (msg) {
@@ -77,7 +80,7 @@ function bluetooth(jqm_listview)
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
-            var itemObject = $('<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>');
+            var itemObject = $('<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li><br>');
             var statusObject = $('<span class=\'blink\'></span>');
 
             itemObject.append(statusObject);
@@ -136,19 +139,23 @@ function bluetooth(jqm_listview)
     this.connectSuccess = function (result) {
         switch (result.status) {
             case 'connected':
-                _self.statusObject.html('CONNECTED!');
+                _self.isConnected = true;
+                _self.statusObject.html('Connected');
                 _self.statusObject.css('color', '#009900');
                 _self.statusObject.css('font-weight', 'bold');
+
+                _self.sendToDevice('The quick brown fox jump over the lazy dog.');
                 break;
 
             case 'connecting':
-                _self.statusObject.html('CONNECTING ...');
+                _self.statusObject.html('Connecting ...');
                 _self.statusObject.css('font-weight', 'normal');
                 _self.statusObject.css('color', '#0000FF');
                 break;
 
             case 'disconnected':
-                _self.statusObject.html('DISCONNECTED!');
+                _self.isConnected = false;
+                _self.statusObject.html('Disconnected');
                 _self.statusObject.css('font-weight', 'bold');
                 _self.statusObject.css('color', '#FF0000');
                 break;
@@ -156,6 +163,10 @@ function bluetooth(jqm_listview)
     }
 
     this.connectError = function (result) {
+        _self.isConnected = false;
         _self.postMessage("Connect Error : " + JSON.stringify(result));
+    }
+
+    this.sendToDevice = function (data) {
     }
 }
