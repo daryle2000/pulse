@@ -78,7 +78,7 @@ function bluetooth(jqm_listview)
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
             var itemObject = $('<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>');
-            var statusObject = $('<span></span>');
+            var statusObject = $('<span class=\'blink\'></span>');
 
             itemObject.append(statusObject);
             _self.listviewObj.append(itemObject);
