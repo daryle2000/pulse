@@ -4,6 +4,7 @@ function bluetooth(jqm_listview)
     this.listviewObj = jqm_listview;
     this.isScanning = false;
     this.isInitialized = false;
+    this.statusObject = null;
 
     this.isConnected = false;
     this.bluetoothAddresses = [];
@@ -11,7 +12,7 @@ function bluetooth(jqm_listview)
     this.bluetoothSelectedDeviceName = '';
     this.pin = '';
 
-    this.statusObject = null;
+    this.isSendSuccess = true;
 
     this.postMessage = function (msg) {
         navigator.notification.alert(msg, null, 'Notification');
@@ -143,8 +144,6 @@ function bluetooth(jqm_listview)
                 _self.statusObject.html('Connected');
                 _self.statusObject.css('color', '#009900');
                 _self.statusObject.css('font-weight', 'bold');
-
-                _self.sendToDevice('The quick brown fox jump over the lazy dog.');
                 break;
 
             case 'connecting':
@@ -167,6 +166,18 @@ function bluetooth(jqm_listview)
         _self.postMessage("Connect Error : " + JSON.stringify(result));
     }
 
-    this.sendToDevice = function (data) {
+    this.disconnect = function () {
+    }
+
+    this.sendToDevice = function (stringMessage, successCallback, errorCallback) {
+        var params = {
+            address: _self.bluetoothSelectedDeviceAddress,
+            value: bluetoothle.bytesToEncodeString(bluetooth.stringToBytes(stringMessage + '\r\n')),
+            serviceUuid: 'FFE0',
+            characteristicUuid: 'FFE1'
+        };
+
+        _self.isSendSuccess = false;
+        bluetoothle.write(successCallback, errorCallback, params);
     }
 }
