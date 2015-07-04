@@ -95,10 +95,12 @@ function bluetooth(jqm_listview)
     }
 
     this.selectBluetoothDevice = function (deviceAddress, deviceName) {
-        navigator.notification.prompt('Connect to ' + device + '? Enter PIN below.',
+        navigator.notification.prompt('Connect to ' + deviceName + '? Enter PIN below.',
             function (result) {
-            _self.setSelectedDevice = deviceAddress;
-            _self.postMessage('Selected device is ' + _self.setSelectedDevice);
+                if (result == 1) {
+                    _self.setSelectedDevice = deviceAddress;
+                    _self.postMessage('Selected device is ' + _self.setSelectedDevice);
+                }
             },
             'BLE Connect',
             ['Connect', 'Cancel'],
