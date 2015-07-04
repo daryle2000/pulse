@@ -6,6 +6,8 @@ function bluetooth(jqm_listview)
     this.isInitialized = false;
     this.bluetoothAddresses = [];
     this.bluetoothSelectedDeviceAddress = '';
+    this.bluetoothSelectedDeviceName = '';
+    this.pin = '';
 
     this.postMessage = function (msg) {
         navigator.notification.alert(msg, null, 'Notification');
@@ -28,14 +30,6 @@ function bluetooth(jqm_listview)
     this.clearDeviceList = function () {
         _self.bluetoothAddresses.length = 0;    // clear array
         _self.listviewObj.empty();
-    }
-
-    this.setSelectedDevice = function (deviceAddress) {
-        _self.bluetoothSelectedDeviceAddress = deviceAddress;
-    }
-
-    this.getSelectedDevice = function () {
-        return _self.bluetoothSelectedDeviceAddress;
     }
 
     this.scan = function () {
@@ -94,21 +88,6 @@ function bluetooth(jqm_listview)
         }
     }
 
-    this.selectBluetoothDevice = function (deviceAddress, deviceName) {
-        navigator.notification.prompt('Connect to ' + deviceName + '? Enter PIN below.',
-            function (result) {
-                if (result.buttonIndex == 1) {
-                    var pin = result.input1;
-
-                    _self.setSelectedDevice = deviceAddress;
-                    _self.postMessage('Selected device is ' + _self.setSelectedDevice);
-                }
-            },
-            'BLE Connect',
-            ['Connect', 'Cancel'],
-            '000000');
-    }
-
     this.startScanError = function (error) {
         _self.postMessage('Start Scan Error : ' + JSON.stringify(error));
     }
@@ -125,5 +104,48 @@ function bluetooth(jqm_listview)
     }
 
     this.stopScanError = function () {
+    }
+
+
+    this.selectBluetoothDevice = function (deviceAddress, deviceName) {
+        navigator.notification.prompt('Connect to ' + deviceName + '? Enter PIN below.',
+            function (result) {
+                if (result.buttonIndex == 1) {
+                    _self.bluetoothSelectedDeviceAddress = deviceAddress;
+                    _self.bluetoothSelectedDeviceName = deviceName; 
+                    _self.pin = result.input1;
+
+                    _self.connectBluetoothDevice ();
+                }
+            },
+            'BLE Connect',
+            ['Connect', 'Cancel'],
+            '000000');
+    }
+
+    this.connectBluetoothDevice = function () {
+        _self.postMessage('Connecting to ' + deviceName);
+
+        var param = { address: _self.bluetoothSelectedDeviceAddress };
+        bluetoothle.connect(connectSuccess, connectError, param);
+    }
+
+    this.connectSuccess = function (result) {
+        switch (result.status) {
+            case 'connected':
+                _self.postMessage('Connected to ' + _self.bluetoothSelectedDeviceName);
+                break;
+
+            case 'connecting':
+                break;
+
+            case 'disconnected':
+                _self.postMessage('Disconnected from ' + _self.bluetoothSelectedDeviceName);
+                break;
+        }
+    }
+
+    this.connectError = function (result) {
+        _self.postMessage("Connect Error : " + JSON.stringify(result));
     }
 }
