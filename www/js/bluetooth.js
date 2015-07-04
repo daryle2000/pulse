@@ -82,7 +82,7 @@ function bluetooth(jqm_listview)
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
 
             var itemHandler = '_self.selectBluetoothDevice(' + index.toString() + ');';
-            var itemToAdd = '<li class=\'wrap\' + onclick=' + itemHandler + '>' + itemContent + '</li>';
+            var itemToAdd = '<li class=\'wrap\' onclick=' + itemHandler + '>' + itemContent + '</li>';
             _self.listviewObj.append(itemToAdd);
 
             _self.listviewObj.listview('refresh');
