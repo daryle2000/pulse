@@ -8,6 +8,7 @@ function bluetooth(jqm_listview)
     this.bluetoothSelectedDeviceAddress = '';
     this.bluetoothSelectedDeviceName = '';
     this.pin = '';
+    this.statusObject = null;
 
     this.postMessage = function (msg) {
         navigator.notification.alert(msg, null, 'Notification');
@@ -74,14 +75,16 @@ function bluetooth(jqm_listview)
 
             var itemContent = '<h1>' + result.name + '</h1>' +
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
-                              'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span>';
+                              'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
             var itemToAdd = '<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>';
 
             var deviceItem = _self.listviewObj.append(itemToAdd);
+            var statusObject = deviceItem.append('<span></span>');
+
             deviceItem.unbind('click');
             deviceItem.click(function () {
-                _self.selectBluetoothDevice(result.address, result.name);
+                _self.selectBluetoothDevice(result.address, result.name, statusObject);
             });
 
             _self.listviewObj.listview('refresh');
@@ -107,13 +110,14 @@ function bluetooth(jqm_listview)
     }
 
 
-    this.selectBluetoothDevice = function (deviceAddress, deviceName) {
+    this.selectBluetoothDevice = function (deviceAddress, deviceName, statusObject) {
         navigator.notification.prompt('Connect to ' + deviceName + '? Enter PIN below.',
             function (result) {
                 if (result.buttonIndex == 1) {
                     _self.bluetoothSelectedDeviceAddress = deviceAddress;
                     _self.bluetoothSelectedDeviceName = deviceName; 
                     _self.pin = result.input1;
+                    _self.statusObject = statusObject;
 
                     _self.connectBluetoothDevice ();
                 }
@@ -124,8 +128,6 @@ function bluetooth(jqm_listview)
     }
 
     this.connectBluetoothDevice = function () {
-        _self.postMessage('Connecting to ' + _self.bluetoothSelectedDeviceName);
-
         var param = { address: _self.bluetoothSelectedDeviceAddress };
         bluetoothle.connect(_self.connectSuccess, _self.connectError, param);
     }
@@ -133,14 +135,21 @@ function bluetooth(jqm_listview)
     this.connectSuccess = function (result) {
         switch (result.status) {
             case 'connected':
-                _self.postMessage('Connected to ' + _self.bluetoothSelectedDeviceName);
+                _self.statusObject.html('CONNECTED!');
+                _self.statusObject.css('color', '#009900');
+                _self.statusObject.css('font-weight', 'bold');
                 break;
 
             case 'connecting':
+                _self.statusObject.html('CONNECTING...');
+                _self.statusObject.css('font-weight', 'normal');
+                _self.statusObject.css('color', '#0000FF');
                 break;
 
             case 'disconnected':
-                _self.postMessage('Disconnected from ' + _self.bluetoothSelectedDeviceName);
+                _self.statusObject.html('DISCONNECTED!');
+                _self.statusObject.css('font-weight', 'bold');
+                _self.statusObject.css('color', '#FF0000');
                 break;
         }
     }
