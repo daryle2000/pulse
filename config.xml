@@ -28,6 +28,7 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="com.randdusing.bluetoothle"/>
     <gap:plugin name="org.apache.cordova.statusbar" />
+    <gap:plugin name="org.apache.cordova.dialogs" />
   
     <!--
     <gap:plugin name="org.apache.cordova.battery-status" />
@@ -37,7 +38,6 @@
     <gap:plugin name="org.apache.cordova.contacts" />
     <gap:plugin name="org.apache.cordova.device" />
     <gap:plugin name="org.apache.cordova.device-motion" />
-    <gap:plugin name="org.apache.cordova.dialogs" />
     <gap:plugin name="org.apache.cordova.file" />
     <gap:plugin name="org.apache.cordova.file-transfer" />
     <gap:plugin name="org.apache.cordova.geolocation" />
