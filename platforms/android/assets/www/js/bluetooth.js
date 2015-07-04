@@ -80,7 +80,7 @@ function bluetooth(jqm_listview)
             var itemToAdd = '<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li>';
 
             var deviceItem = _self.listviewObj.append(itemToAdd);
-            var statusObject = deviceItem.append('<span></span>');
+            var statusObject = deviceItem.append('<span>Status</span>');
 
             deviceItem.unbind('click');
             deviceItem.click(function () {
@@ -141,7 +141,7 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
-                _self.statusObject.html('CONNECTING...');
+                _self.statusObject.html('CONNECTING ...');
                 _self.statusObject.css('font-weight', 'normal');
                 _self.statusObject.css('color', '#0000FF');
                 break;
