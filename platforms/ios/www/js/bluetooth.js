@@ -138,6 +138,8 @@ function bluetooth(jqm_listview)
         navigator.notification.confirm('Connect to ' + deviceName + '?',
             function (result) {
                 if (result == 1) {
+                    _self.postMessage('Connecting...');
+
                     _self.bluetoothSelectedDeviceAddress = deviceAddress;
                     _self.bluetoothSelectedDeviceName = deviceName; 
                     _self.statusObject = statusObject;
@@ -150,6 +152,7 @@ function bluetooth(jqm_listview)
     }
 
     this.connectBluetoothDevice = function () {
+        _self.postMessage('connectBluetoothDevice...');
         var param = { address: _self.bluetoothSelectedDeviceAddress };
         bluetoothle.connect(_self.connectSuccess, _self.connectError, param);
     }
