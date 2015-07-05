@@ -155,10 +155,9 @@ function bluetooth(jqm_listview)
     }
 
     this.connectSuccess = function (result) {
-        _self.postMessage("connectSuccess : " + JSON.stringify(result));
-
         switch (result.status) {
             case 'connected':
+                _self.postMessage('Connected');
                 _self.isConnected = true;
                 _self.statusObject.html('Connected');
                 _self.statusObject.css('color', '#009900');
@@ -174,6 +173,7 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
+                _self.postMessage('Connecting');
                 _self.statusObject.html('Connecting ...');
                 _self.statusObject.css('font-weight', 'normal');
                 _self.statusObject.css('color', '#0000FF');
