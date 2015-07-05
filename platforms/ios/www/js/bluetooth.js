@@ -137,6 +137,8 @@ function bluetooth(jqm_listview)
     this.selectBluetoothDevice = function (deviceAddress, deviceName, statusObject) {
         navigator.notification.confirm('Connect to ' + deviceName + '?',
             function (result) {
+                _self.postMessage(JSON.stringify(result));
+                /*
                 if (result.buttonIndex == 1) {
                     _self.postMessage('Connecting');
                     _self.bluetoothSelectedDeviceAddress = deviceAddress;
@@ -145,6 +147,7 @@ function bluetooth(jqm_listview)
 
                     _self.connectBluetoothDevice ();
                 }
+                */
             },
             'BLE Connect',
             'Connect,Cancel');
