@@ -141,7 +141,6 @@ function bluetooth(jqm_listview)
                     _self.postMessage('Connecting');
                     _self.bluetoothSelectedDeviceAddress = deviceAddress;
                     _self.bluetoothSelectedDeviceName = deviceName; 
-                    _self.pin = result.input1;
                     _self.statusObject = statusObject;
 
                     _self.connectBluetoothDevice ();
