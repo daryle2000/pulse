@@ -162,6 +162,12 @@ function bluetooth(jqm_listview)
                 _self.statusObject.html('Connected');
                 _self.statusObject.css('color', '#009900');
                 _self.statusObject.css('font-weight', 'bold');
+
+                var isSent = _self.sendToDevice('CMD+RTT');
+                if (isSent) {
+                    var r = _self.receiveFromDevice();
+                    _self.postMessage('RECEIVED: ' + r);
+                }
                 break;
 
             case 'connecting':
