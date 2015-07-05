@@ -1,6 +1,12 @@
 function bluetooth(jqm_listview) 
 {
+    var BLE = { 
+        GENERIC_ACCESS: 'FFE0',
+        GENERIC_ACCESS_CHARACTERISTIC_RXTX: 'FFE1'
+    };
+
     var _self = this;
+
     this.listviewObj = jqm_listview;
     this.isScanning = false;
     this.isInitialized = false;
@@ -10,9 +16,9 @@ function bluetooth(jqm_listview)
     this.bluetoothAddresses = [];
     this.bluetoothSelectedDeviceAddress = '';
     this.bluetoothSelectedDeviceName = '';
-    this.pin = '';
 
-    this.isSendSuccess = true;
+    this.writeResult = {};
+    this.readResult = {};
 
     this.postMessage = function (msg) {
         navigator.notification.alert(msg, null, 'Notification');
@@ -116,7 +122,7 @@ function bluetooth(jqm_listview)
 
 
     this.selectBluetoothDevice = function (deviceAddress, deviceName, statusObject) {
-        navigator.notification.prompt('Connect to ' + deviceName + '? Enter PIN below.',
+        navigator.notification.confirm('Connect to ' + deviceName + '?',
             function (result) {
                 if (result.buttonIndex == 1) {
                     _self.bluetoothSelectedDeviceAddress = deviceAddress;
@@ -128,8 +134,7 @@ function bluetooth(jqm_listview)
                 }
             },
             'BLE Connect',
-            ['Connect', 'Cancel'],
-            '000000');
+            ['Connect', 'Cancel']);
     }
 
     this.connectBluetoothDevice = function () {
@@ -169,15 +174,62 @@ function bluetooth(jqm_listview)
     this.disconnect = function () {
     }
 
-    this.sendToDevice = function (stringMessage, successCallback, errorCallback) {
+    this.sendToDevice = function (stringMessage) {
         var params = {
             address: _self.bluetoothSelectedDeviceAddress,
             value: bluetoothle.bytesToEncodeString(bluetooth.stringToBytes(stringMessage + '\r\n')),
-            serviceUuid: 'FFE0',
-            characteristicUuid: 'FFE1'
+            serviceUuid: BLE.GENERIC_ACCESS,
+            characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
         };
 
-        _self.isSendSuccess = false;
-        bluetoothle.write(successCallback, errorCallback, params);
+        _self.writeResult = {
+            error: 0,
+            status: 'sending', 
+            value: ''
+        };
+
+        bluetoothle.write(_self.sendSuccess, _self.sendError, params);
+        while (_self.writeResult.status == 'sending');
+        return _self.writeResult.error == 0 && _self.writeResult.status == 'written';
+    }
+
+    this.sendSuccess = function (result) {
+        _self.writeResult.error = 0;
+        _self.writeResult.status = result.status;
+    }
+
+    this.sendError = function (result) {
+        _self.writeResult.error = 1;
+        _self.writeResult.status = result.status;
+    }
+
+    this.receiveFromDevice = function () {
+        var params = {
+            address: _self.bluetoothSelectedDeviceAddress,
+            serviceUuid: BLE.GENERIC_ACCESS,
+            characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
+        };
+
+        _self.readResult = {
+            error: 0,
+            status: 'receiving',
+            value: ''
+        };
+
+        bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
+        while (_self.readResult.status == 'receiving');
+        return _self.readResult.error == 0 && _self.readResult.status == 'read';
+    }
+
+    this.receiveSuccess = function (result) {
+        _self.readResult.error = 0;
+        _self.readResult.value = result.value;
+        _self.readResult.status = result.status;
+    }
+
+    this.receiveError = function (result) {
+        _self.readResult.error = 1;
+        _self.readResult.value = '';
+        _self.readResult.status = result.status;
     }
 }
