@@ -142,6 +142,8 @@ function bluetooth(jqm_listview)
                     _self.bluetoothSelectedDeviceName = deviceName; 
                     _self.statusObject = statusObject;
 
+                    _self.postMessage(_self.statusObject.html());
+
                     _self.connectBluetoothDevice ();
                 }
             },
