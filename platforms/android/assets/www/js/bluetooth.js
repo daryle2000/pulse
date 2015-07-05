@@ -163,11 +163,13 @@ function bluetooth(jqm_listview)
                 _self.statusObject.css('color', '#009900');
                 _self.statusObject.css('font-weight', 'bold');
 
+                /*
                 var isSent = _self.sendToDevice('CMD+RTT');
                 if (isSent) {
                     var r = _self.receiveFromDevice();
                     _self.postMessage('RECEIVED: ' + r);
                 }
+                */
                 break;
 
             case 'connecting':
@@ -223,11 +225,13 @@ function bluetooth(jqm_listview)
     this.sendSuccess = function (result) {
         _self.writeResult.error = 0;
         _self.writeResult.status = result.status;
+        _self.postMessage('sendSuccess: ' + JSON.stringify(result));
     }
 
     this.sendError = function (result) {
         _self.writeResult.error = 1;
         _self.writeResult.status = result.status;
+        _self.postMessage('sendError: ' + JSON.stringify(result));
     }
 
     // ----------------------------------------------------------------------------------------------------------------
