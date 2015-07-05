@@ -1,4 +1,10 @@
-function bluetooth(jqm_listview) 
+// ----------------------------------------------------------------------------------------------------------------
+// Bluetooth (BLE 4.0) using Phonegap Bluetooth LE library
+// Author: Jodaryle Factor
+// Date: July 4, 2015
+// ----------------------------------------------------------------------------------------------------------------
+
+function bluetooth(jqm_listview)
 {
     var BLE = { 
         GENERIC_ACCESS: 'FFE0',
@@ -20,9 +26,17 @@ function bluetooth(jqm_listview)
     this.writeResult = {};
     this.readResult = {};
 
+    // ----------------------------------------------------------------------------------------------------------------
+    // Helper Functions
+    // ----------------------------------------------------------------------------------------------------------------
+
     this.postMessage = function (msg) {
         navigator.notification.alert(msg, null, 'Notification');
     }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // Bluetooth Initialization
+    // ----------------------------------------------------------------------------------------------------------------
 
     this.init = function () {
         var params = { request: true };
@@ -42,6 +56,10 @@ function bluetooth(jqm_listview)
         _self.bluetoothAddresses.length = 0;    // clear array
         _self.listviewObj.empty();
     }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // Scanning
+    // ----------------------------------------------------------------------------------------------------------------
 
     this.scan = function () {
         try {
@@ -69,14 +87,6 @@ function bluetooth(jqm_listview)
 
         if (result.status = 'scanResult' && result.address != undefined)
         {
-            /*
-            "status": "scanResult",
-            "advertisement": "awArG05L",
-            "rssi": -58,
-            "name": "Polar H7 3B321015",
-            "address": "ECC037FD-72AE-AFC5-9213-CA785B3B5C63"
-            */
-
             if (_self.bluetoothAddresses.indexOf(result.address) >= 0)      // disregard if device already exist
                 return;
 
@@ -120,6 +130,9 @@ function bluetooth(jqm_listview)
     this.stopScanError = function () {
     }
 
+    // ----------------------------------------------------------------------------------------------------------------
+    // Connect
+    // ----------------------------------------------------------------------------------------------------------------
 
     this.selectBluetoothDevice = function (deviceAddress, deviceName, statusObject) {
         navigator.notification.confirm('Connect to ' + deviceName + '?',
@@ -171,8 +184,16 @@ function bluetooth(jqm_listview)
         _self.postMessage("Connect Error : " + JSON.stringify(result));
     }
 
+    // ----------------------------------------------------------------------------------------------------------------
+    // Disconnect
+    // ----------------------------------------------------------------------------------------------------------------
+
     this.disconnect = function () {
     }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // Sending 
+    // ----------------------------------------------------------------------------------------------------------------
 
     this.sendToDevice = function (stringMessage) {
         var params = {
@@ -202,6 +223,10 @@ function bluetooth(jqm_listview)
         _self.writeResult.error = 1;
         _self.writeResult.status = result.status;
     }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // Receiving 
+    // ----------------------------------------------------------------------------------------------------------------
 
     this.receiveFromDevice = function () {
         var params = {
