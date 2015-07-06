@@ -110,7 +110,6 @@ function bluetooth(jqm_listview)
                 name: result.name,
                 rssi: result.rssi,
                 itemObject: itemObject,
-                statusObject: statusObject, 
                 isConnected: false
             };
 
@@ -171,15 +170,14 @@ function bluetooth(jqm_listview)
             case 'connected':
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
-                _self.deviceObject.statusObject.html('Connected');
 
-                /*
                 var isSent = _self.sendToDevice('CMD+RTT');
                 if (isSent) {
+                    _self.postMessage('SENT');
                     var r = _self.receiveFromDevice();
                     _self.postMessage('RECEIVED: ' + r);
                 }
-                */
+                
                 break;
 
             case 'connecting':
