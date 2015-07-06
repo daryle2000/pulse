@@ -90,7 +90,7 @@ function bluetooth(jqm_listview)
                 return e.address == result.address;
             });
 
-            if (dev.length >= 0)      // disregard if device already exist
+            if (dev.length > 0)      // disregard if device already exist
                 return;
 
             var itemContent = '<h1>' + result.name + '</h1>' +
