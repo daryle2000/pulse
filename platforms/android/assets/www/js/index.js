@@ -17,6 +17,13 @@
  * under the License.
  */
 
+var DEVICE_TYPE = {
+    IPAD: 'ipad',
+    IPHONE: 'iphone',
+    ANDROID: 'android',
+    BLACKBERRY: 'blackBerry',
+    UNDETECTED: 'undetected'
+};
 
 function application() {
     this.bluetoothObj = null;
@@ -37,7 +44,7 @@ function application() {
             _self.updateStatus();
 
             _self.bluetoothObj = new bluetooth($('#connectListView'));
-            _self.bluetoothObj.init();
+            _self.bluetoothObj.init(_self.getDeviceType());
 
             // Event when Connect item is clicked
             $(document).on('pageshow', '#connectPage', function (event, ui) {
@@ -159,17 +166,17 @@ function application() {
 
     this.getDeviceType = function () {
         if (navigator.userAgent.match(/iPad/i) == "iPad")
-            return "ipad";
+            return DEVICE_TYPE.IPAD;
         
         if (navigator.userAgent.match(/iPhone/i) == "iPhone")
-            return "iphone";
+            return DEVICE_TYPE.IPHONE;
 
         if (navigator.userAgent.match(/Android/i) == "Android")
-            return "android";
+            return DEVICE_TYPE.ANDROID;
 
         if (navigator.userAgent.match(/BlackBerry/i) == "BlackBerry")
-            return "blackBerry";
+            return DEVICE_TYPE.BLACKBERRY;
 
-        return "undetected";
+        return DEVICE_TYPE.UNDETECTED;
     }
 }
