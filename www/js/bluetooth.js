@@ -199,22 +199,28 @@ function bluetooth(jqm_listview)
     // ----------------------------------------------------------------------------------------------------------------
 
     this.sendToDevice = function (stringMessage) {
-        var params = {
-            value: bluetoothle.bytesToEncodeString(bluetooth.stringToBytes(stringMessage + '\r\n')),
-            serviceUuid: BLE.GENERIC_ACCESS,
-            characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
-            type:'noResponse'
-        };
+        try
+        {
+            var params = {
+                value: bluetoothle.bytesToEncodeString(bluetooth.stringToBytes(stringMessage + '\r\n')),
+                serviceUuid: BLE.GENERIC_ACCESS,
+                characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
+                type:'noResponse'
+            };
 
-        /*
-        _self.writeResult = {
-            error: 0,
-            status: 'sending', 
-            value: ''
-        };
-        */
+            /*
+            _self.writeResult = {
+                error: 0,
+                status: 'sending', 
+                value: ''
+            };
+            */
 
-        bluetoothle.write(_self.sendSuccess, _self.sendError, params);
+            bluetoothle.write(_self.sendSuccess, _self.sendError, params);
+        }
+        catch (e) {
+            _self.postMessage('sendToDevice Err: ' + e);
+        }
     }
 
     this.sendSuccess = function (result) {
