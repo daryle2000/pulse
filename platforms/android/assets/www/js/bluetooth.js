@@ -172,9 +172,7 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                //_self.discover();
-                _self.sendToDevice('CMD+RTT');
-                
+                _self.discover();
                 break;
 
             case 'connecting':
@@ -198,7 +196,8 @@ function bluetooth(jqm_listview)
     }
 
     this.discoverSuccess = function (result) {
-        _self.postMessage("discoverSuccess: " + JSON.stringify(result));
+        //_self.postMessage("discoverSuccess: " + JSON.stringify(result));
+        _self.sendToDevice('CMD+RTT');
     }
 
     this.discoverError = function (result) {
