@@ -204,8 +204,12 @@ function bluetooth(jqm_listview)
             var params = {
                 address: _self.deviceObject.address,
                 value: bluetoothle.bytesToEncodedString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
+                /*
                 serviceUuid: BLE.GENERIC_ACCESS,
                 characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
+                */
+                serviceUuid: 'FFE0',
+                characteristicUuid: 'FFE1',
                 type:'noResponse'
             };
 
