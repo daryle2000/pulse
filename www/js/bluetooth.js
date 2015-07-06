@@ -172,8 +172,8 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                _self.discover();
-                //_self.sendToDevice('CMD+RTT');
+                //_self.discover();
+                _self.sendToDevice('CMD+RTT');
                 
                 break;
 
@@ -223,8 +223,7 @@ function bluetooth(jqm_listview)
                 address: _self.deviceObject.address,
                 value: bluetoothle.bytesToEncodedString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
                 serviceUuid: 'ffe0',
-                characteristicUuid: 'ffe1',
-                type:'noResponse'
+                characteristicUuid: 'ffe1'
             };
 
             /*
