@@ -168,7 +168,7 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                var isSent = _self.sendToDevice('CMD+RTT');
+                _self.sendToDevice('CMD+RTT');
                 
                 break;
 
@@ -206,24 +206,26 @@ function bluetooth(jqm_listview)
             characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
         };
 
+        /*
         _self.writeResult = {
             error: 0,
             status: 'sending', 
             value: ''
         };
+        */
 
         bluetoothle.write(_self.sendSuccess, _self.sendError, params);
     }
 
     this.sendSuccess = function (result) {
-        _self.writeResult.error = 0;
-        _self.writeResult.status = result.status;
+        //_self.writeResult.error = 0;
+        //_self.writeResult.status = result.status;
         _self.postMessage('sendSuccess: ' + JSON.stringify(result));
     }
 
     this.sendError = function (result) {
-        _self.writeResult.error = 1;
-        _self.writeResult.status = result.status;
+        //_self.writeResult.error = 1;
+        //_self.writeResult.status = result.status;
         _self.postMessage('sendError: ' + JSON.stringify(result));
     }
 
