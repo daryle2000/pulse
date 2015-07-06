@@ -105,6 +105,7 @@ function bluetooth(jqm_listview)
                 name: result.name,
                 rssi: result.rssi,
                 statusObject: statusObject,
+                itemObject: itemObject,
                 isConnected: false
             };
 
@@ -169,12 +170,13 @@ function bluetooth(jqm_listview)
     this.connectSuccess = function (result) {
         switch (result.status) {
             case 'connected':
-                _self.postMessage('Connected to: ' + _self.deviceObject.statusObject.html());
                 _self.deviceObject.statusObject.html('Connected');
-                _self.postMessage('Connected to: ' + _self.deviceObject.statusObject.html());
-                //_self.deviceObject.statusObject.css('color', '#009900');
-                //_self.deviceObject.statusObject.css('font-weight', 'bold');
-                //_self.deviceObject.isConnected = true;
+                _self.deviceObject.statusObject.css('color', '#009900');
+                _self.deviceObject.statusObject.css('font-weight', 'bold');
+                _self.deviceObject.isConnected = true;
+
+                _self.deviceObject.itemObject.css('background-color', '#00ff00');
+
                 /*
                 var isSent = _self.sendToDevice('CMD+RTT');
                 if (isSent) {
@@ -185,16 +187,16 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
-                //_self.deviceObject.statusObject.html('Connecting ...');
-                //_self.deviceObject.statusObject.css('font-weight', 'normal');
-                //_self.deviceObject.statusObject.css('color', '#0000FF');
+                _self.deviceObject.statusObject.html('Connecting ...');
+                _self.deviceObject.statusObject.css('font-weight', 'normal');
+                _self.deviceObject.statusObject.css('color', '#0000FF');
                 break;
 
             case 'disconnected':
                 _self.deviceObject.statusObject.html('Disconnected');
-                //_self.deviceObject.statusObject.css('font-weight', 'bold');
-                //_self.deviceObject.statusObject.css('color', '#FF0000');
-                //_self.deviceObject.isConnected = true;
+                _self.deviceObject.statusObject.css('font-weight', 'bold');
+                _self.deviceObject.statusObject.css('color', '#FF0000');
+                _self.deviceObject.isConnected = true;
                 break;
         }
     }
