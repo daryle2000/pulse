@@ -154,10 +154,8 @@ function bluetooth(jqm_listview)
 
         navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
             function (result) {
-                if (result == 1) {
-                    _self.postMessage(_self.deviceObject.statusObject.html());
+                if (result == 1) 
                     _self.connectBluetoothDevice ();
-                }
             },
             'BLE Connect',
             'Connect,Cancel');
@@ -171,6 +169,7 @@ function bluetooth(jqm_listview)
     this.connectSuccess = function (result) {
         switch (result.status) {
             case 'connected':
+                _self.postMessage("Connected: " + JSON.stringify(result));
                 _self.isConnected = true;
                 _self.deviceObject.statusObject.html('Connected');
                 _self.deviceObject.statusObject.css('color', '#009900');
@@ -186,6 +185,7 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
+                _self.postMessage("Connecting: " + JSON.stringify(result));
                 _self.deviceObject.statusObject.html('Connecting ...');
                 _self.deviceObject.statusObject.css('font-weight', 'normal');
                 _self.deviceObject.statusObject.css('color', '#0000FF');
