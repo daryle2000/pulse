@@ -7,8 +7,8 @@
 function bluetooth(jqm_listview)
 {
     var BLE = { 
-        GENERIC_ACCESS: 'FFE0',
-        GENERIC_ACCESS_CHARACTERISTIC_RXTX: 'FFE1'
+        GENERIC_ACCESS: 0xFFE0,
+        GENERIC_ACCESS_CHARACTERISTIC_RXTX: 0xFFE1
     };
 
     var _self = this;
