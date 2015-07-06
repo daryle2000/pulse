@@ -101,16 +101,12 @@ function bluetooth(jqm_listview)
             // append <li> element to <ul> listview
             _self.listviewObj.append(itemObject);
 
-            var statusObject = $('<span>Status</span>');
-            itemObject.append(statusObject);
-
             // create object
             var device = {
                 address: result.address,
                 name: result.name,
                 rssi: result.rssi,
                 itemObject: itemObject,
-                statusObject: statusObject, 
                 isConnected: false
             };
 
@@ -171,15 +167,9 @@ function bluetooth(jqm_listview)
             case 'connected':
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
-                _self.deviceObject.statusObject.html('Connected');
 
-                /*
                 var isSent = _self.sendToDevice('CMD+RTT');
-                if (isSent) {
-                    var r = _self.receiveFromDevice();
-                    _self.postMessage('RECEIVED: ' + r);
-                }
-                */
+                
                 break;
 
             case 'connecting':
@@ -223,8 +213,6 @@ function bluetooth(jqm_listview)
         };
 
         bluetoothle.write(_self.sendSuccess, _self.sendError, params);
-        while (_self.writeResult.status == 'sending');
-        return _self.writeResult.error == 0 && _self.writeResult.status == 'written';
     }
 
     this.sendSuccess = function (result) {
