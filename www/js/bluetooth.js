@@ -11,8 +11,8 @@ function bluetooth(jqm_listview)
     // to get Service and Characteristic UUID
     // ----------------------------------------------------------------------------------------------------------------
     var BLE = {
-        SERVICE_UUID:        'ffe0',
-        CHARACTERISTIC_UUID: 'ffe1'
+        SERVICE_UUID: 0xffe0,
+        CHARACTERISTIC_UUID: 0xffe1
     };
 
     var _self = this;
