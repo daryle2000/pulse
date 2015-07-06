@@ -11,8 +11,8 @@ function bluetooth(jqm_listview)
     // to get Service and Characteristic UUID
     // ----------------------------------------------------------------------------------------------------------------
     var BLE = {
-        SERVICE_UUID:        '0000ffe0-0000-1000-8000-00805f9b34fb',
-        CHARACTERISTIC_UUID: '0000ffe1-0000-1000-8000-00805f9b34fb'
+        SERVICE_UUID:        'ffe0',
+        CHARACTERISTIC_UUID: 'ffe1'
     };
 
     var _self = this;
@@ -172,8 +172,8 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                _self.discover();
-                //_self.sendToDevice('CMD+RTT');
+                //_self.discover();
+                _self.sendToDevice('CMD+RTT');
                 
                 break;
 
