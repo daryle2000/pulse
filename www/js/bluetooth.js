@@ -17,7 +17,6 @@ function bluetooth(jqm_listview)
     this.isScanning = false;
     this.isInitialized = false;
 
-    this.isConnected = false;
     this.bluetoothDevices = [];
     this.deviceObject = null;
 
@@ -105,7 +104,8 @@ function bluetooth(jqm_listview)
                 address: result.address,
                 name: result.name,
                 rssi: result.rssi,
-                statusObject: statusObject
+                statusObject: statusObject,
+                isConnected: false
             };
 
             // add to device array
@@ -169,12 +169,10 @@ function bluetooth(jqm_listview)
     this.connectSuccess = function (result) {
         switch (result.status) {
             case 'connected':
-                _self.postMessage("Connected: " + JSON.stringify(result));
-                _self.isConnected = true;
                 _self.deviceObject.statusObject.html('Connected');
                 _self.deviceObject.statusObject.css('color', '#009900');
                 _self.deviceObject.statusObject.css('font-weight', 'bold');
-
+                _self.deviceObject.isConnected = true;
                 /*
                 var isSent = _self.sendToDevice('CMD+RTT');
                 if (isSent) {
@@ -185,23 +183,21 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
-                _self.postMessage("Connecting: " + JSON.stringify(result));
                 _self.deviceObject.statusObject.html('Connecting ...');
                 _self.deviceObject.statusObject.css('font-weight', 'normal');
                 _self.deviceObject.statusObject.css('color', '#0000FF');
                 break;
 
             case 'disconnected':
-                _self.isConnected = false;
                 _self.deviceObject.statusObject.html('Disconnected');
                 _self.deviceObject.statusObject.css('font-weight', 'bold');
                 _self.deviceObject.statusObject.css('color', '#FF0000');
+                _self.deviceObject.isConnected = true;
                 break;
         }
     }
 
     this.connectError = function (result) {
-        _self.isConnected = false;
         _self.postMessage("Connect Error : " + JSON.stringify(result));
     }
 
