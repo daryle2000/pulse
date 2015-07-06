@@ -202,7 +202,7 @@ function bluetooth(jqm_listview)
         try
         {
             var params = {
-                value: bluetoothle.bytesToEncodeString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
+                value: bluetoothle.bytesToEncodedString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
                 serviceUuid: BLE.GENERIC_ACCESS,
                 characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
                 type:'noResponse'
