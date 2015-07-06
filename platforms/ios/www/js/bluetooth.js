@@ -200,10 +200,10 @@ function bluetooth(jqm_listview)
 
     this.sendToDevice = function (stringMessage) {
         var params = {
-            address: _self.deviceObject.address,
             value: bluetoothle.bytesToEncodeString(bluetooth.stringToBytes(stringMessage + '\r\n')),
             serviceUuid: BLE.GENERIC_ACCESS,
-            characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
+            characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
+            type:'noResponse'
         };
 
         /*
