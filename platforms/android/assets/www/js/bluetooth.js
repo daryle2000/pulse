@@ -208,8 +208,8 @@ function bluetooth(jqm_listview)
                 serviceUuid: BLE.GENERIC_ACCESS,
                 characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
                 */
-                serviceUuid: 'FFE0',
-                characteristicUuid: 'FFE1',
+                serviceUuid: '0000ffe0-0000-1000-8000-00805f9b34fb',
+                characteristicUuid: '0000ffe1-0000-1000-8000-00805f9b34fb',
                 type:'noResponse'
             };
 
