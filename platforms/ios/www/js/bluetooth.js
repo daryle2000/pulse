@@ -6,9 +6,13 @@
 
 function bluetooth(jqm_listview)
 {
-    var BLE = { 
-        GENERIC_ACCESS: 0xFFE0,
-        GENERIC_ACCESS_CHARACTERISTIC_RXTX: 0xFFE1
+    // ----------------------------------------------------------------------------------------------------------------
+    // Use nRF Master Control Panel (BLE) Android app
+    // to get Service and Characteristic UUID
+    // ----------------------------------------------------------------------------------------------------------------
+    var BLE = {
+        SERVICE_UUID:        '0000ffe0-0000-1000-8000-00805f9b34fb',
+        CHARACTERISTIC_UUID: '0000ffe1-0000-1000-8000-00805f9b34fb'
     };
 
     var _self = this;
@@ -168,7 +172,8 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                _self.sendToDevice('CMD+RTT');
+                _self.discover();
+                //_self.sendToDevice('CMD+RTT');
                 
                 break;
 
@@ -185,6 +190,19 @@ function bluetooth(jqm_listview)
 
     this.connectError = function (result) {
         _self.postMessage("Connect Error : " + JSON.stringify(result));
+    }
+
+    this.discover = function () {
+        var params = { address: _self.deviceObject.address };
+        bluetoothle.discover(_self.discoverSuccess, _self.discoverError, params);
+    }
+
+    this.discoverSuccess = function (result) {
+        _self.postMessage("discoverSuccess: " + JSON.stringify(result));
+    }
+
+    this.discoverError = function (result) {
+        _self.postMessage("discoverError: " + JSON.stringify(result));
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -204,12 +222,8 @@ function bluetooth(jqm_listview)
             var params = {
                 address: _self.deviceObject.address,
                 value: bluetoothle.bytesToEncodedString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
-                /*
-                serviceUuid: BLE.GENERIC_ACCESS,
-                characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
-                */
-                serviceUuid: '0000ffe0-0000-1000-8000-00805f9b34fb',
-                characteristicUuid: '0000ffe1-0000-1000-8000-00805f9b34fb',
+                serviceUuid: BLE.SERVICE_UUID,
+                characteristicUuid: BLE.CHARACTERISTIC_UUID,
                 type:'noResponse'
             };
 
