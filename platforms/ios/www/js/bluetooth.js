@@ -171,6 +171,7 @@ function bluetooth(jqm_listview)
             case 'connected':
                 _self.postMessage('Connected to: ' + _self.deviceObject.statusObject.html());
                 _self.deviceObject.statusObject.html('Connected');
+                _self.postMessage('Connected to: ' + _self.deviceObject.statusObject.html());
                 //_self.deviceObject.statusObject.css('color', '#009900');
                 //_self.deviceObject.statusObject.css('font-weight', 'bold');
                 //_self.deviceObject.isConnected = true;
@@ -184,7 +185,7 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
-                _self.deviceObject.statusObject.html('Connecting ...');
+                //_self.deviceObject.statusObject.html('Connecting ...');
                 //_self.deviceObject.statusObject.css('font-weight', 'normal');
                 //_self.deviceObject.statusObject.css('color', '#0000FF');
                 break;
