@@ -172,8 +172,8 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                //_self.discover();
-                _self.sendToDevice('CMD+RTT');
+                _self.discover();
+                //_self.sendToDevice('CMD+RTT');
                 
                 break;
 
