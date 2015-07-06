@@ -97,26 +97,25 @@ function bluetooth(jqm_listview)
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
             var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
-            var statusObject = $('<div></div>');
+
+            // append <li> element to <ul> listview
+            _self.listviewObj.append(itemObject);
+
+            var statusObject = $('<span>Status</span>');
+            itemObject.append(statusObject);
 
             // create object
             var device = {
                 address: result.address,
                 name: result.name,
                 rssi: result.rssi,
-                statusObject: statusObject,
                 itemObject: itemObject,
+                statusObject: statusObject, 
                 isConnected: false
             };
 
             // add to device array
             _self.bluetoothDevices.push(device);
-
-            // append status object to <li> element
-            itemObject.append(statusObject);
-
-            // append <li> element to <ul> listview
-            _self.listviewObj.append(itemObject);
 
             itemObject.unbind('click');
             itemObject.click(function () {
@@ -170,12 +169,9 @@ function bluetooth(jqm_listview)
     this.connectSuccess = function (result) {
         switch (result.status) {
             case 'connected':
-                _self.deviceObject.statusObject.html('Connected');
-                _self.deviceObject.statusObject.css('color', '#009900');
-                _self.deviceObject.statusObject.css('font-weight', 'bold');
                 _self.deviceObject.isConnected = true;
-
-                _self.deviceObject.itemObject.css('background-color', '#00ff00');
+                _self.deviceObject.itemObject.css('background-color', '#77ff77');
+                _self.deviceObject.statusObject.html('Connected');
 
                 /*
                 var isSent = _self.sendToDevice('CMD+RTT');
@@ -187,16 +183,12 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
-                _self.deviceObject.statusObject.html('Connecting ...');
-                _self.deviceObject.statusObject.css('font-weight', 'normal');
-                _self.deviceObject.statusObject.css('color', '#0000FF');
+                _self.deviceObject.itemObject.css('background-color', '#ffffaa');
                 break;
 
             case 'disconnected':
-                _self.deviceObject.statusObject.html('Disconnected');
-                _self.deviceObject.statusObject.css('font-weight', 'bold');
-                _self.deviceObject.statusObject.css('color', '#FF0000');
-                _self.deviceObject.isConnected = true;
+                _self.deviceObject.itemObject.css('background-color', '#ff5555');
+                _self.deviceObject.isConnected = false;
                 break;
         }
     }
