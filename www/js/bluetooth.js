@@ -6,9 +6,9 @@
 
 function bluetooth(jqm_listview)
 {
-    var BLE = { 
-        GENERIC_ACCESS: 0xFFE0,
-        GENERIC_ACCESS_CHARACTERISTIC_RXTX: 0xFFE1
+    var BLE = {
+        SERVICE_UUID: '0000ffe0-0000-1000-8000-00805f9b34fb',
+        CHARACTERISTIC_UUID: '0000ffe1-0000-1000-8000-00805f9b34fb'
     };
 
     var _self = this;
@@ -204,12 +204,8 @@ function bluetooth(jqm_listview)
             var params = {
                 address: _self.deviceObject.address,
                 value: bluetoothle.bytesToEncodedString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
-                /*
-                serviceUuid: BLE.GENERIC_ACCESS,
-                characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX,
-                */
-                serviceUuid: '0000ffe0-0000-1000-8000-00805f9b34fb',
-                characteristicUuid: '0000ffe1-0000-1000-8000-00805f9b34fb',
+                serviceUuid: BLE.SERVICE_UUID,
+                characteristicUuid: BLE.CHARACTERISTIC_UUID,
                 type:'noResponse'
             };
 
