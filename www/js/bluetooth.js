@@ -6,8 +6,12 @@
 
 function bluetooth(jqm_listview)
 {
+    // ----------------------------------------------------------------------------------------------------------------
+    // Use nRF Master Control Panel (BLE) Android app
+    // to get Service and Characteristic UUID
+    // ----------------------------------------------------------------------------------------------------------------
     var BLE = {
-        SERVICE_UUID: '0000ffe0-0000-1000-8000-00805f9b34fb',
+        SERVICE_UUID:        '0000ffe0-0000-1000-8000-00805f9b34fb',
         CHARACTERISTIC_UUID: '0000ffe1-0000-1000-8000-00805f9b34fb'
     };
 
@@ -168,7 +172,8 @@ function bluetooth(jqm_listview)
                 _self.deviceObject.isConnected = true;
                 _self.deviceObject.itemObject.css('background-color', '#77ff77');
 
-                _self.sendToDevice('CMD+RTT');
+                _self.discover();
+                //_self.sendToDevice('CMD+RTT');
                 
                 break;
 
@@ -185,6 +190,19 @@ function bluetooth(jqm_listview)
 
     this.connectError = function (result) {
         _self.postMessage("Connect Error : " + JSON.stringify(result));
+    }
+
+    this.discover = function () {
+        var params = { address: _self.deviceObject.address };
+        bluetoothle.discover(_self.discoverSuccess, _self.discoverError, params);
+    }
+
+    this.discoverSuccess = function (result) {
+        _self.postMessage("discoverSuccess: " + JSON.stringify(result));
+    }
+
+    this.discoverError = function (result) {
+        _self.postMessage("discoverError: " + JSON.stringify(result));
     }
 
     // ----------------------------------------------------------------------------------------------------------------
