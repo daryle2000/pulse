@@ -16,12 +16,10 @@ function bluetooth(jqm_listview)
     this.listviewObj = jqm_listview;
     this.isScanning = false;
     this.isInitialized = false;
-    this.statusObject = null;
 
     this.isConnected = false;
-    this.bluetoothAddresses = [];
-    this.bluetoothSelectedDeviceAddress = '';
-    this.bluetoothSelectedDeviceName = '';
+    this.bluetoothDevices = [];
+    this.deviceObject = null;
 
     this.writeResult = {};
     this.readResult = {};
@@ -53,7 +51,7 @@ function bluetooth(jqm_listview)
     }
 
     this.clearDeviceList = function () {
-        _self.bluetoothAddresses.length = 0;    // clear array
+        _self.bluetoothDevices.length = 0;    // clear array
         _self.listviewObj.empty();
     }
 
@@ -87,25 +85,41 @@ function bluetooth(jqm_listview)
 
         if (result.status = 'scanResult' && result.address != undefined)
         {
-            if (_self.bluetoothAddresses.indexOf(result.address) >= 0)      // disregard if device already exist
-                return;
+            // find device object
+            var dev = $.grep(_self.bluetoothDevices, function (e) {
+                return e.address == result.address;
+            });
 
-            var index = _self.bluetoothAddresses.push(result.address) - 1;  // add bluetooth address
-            var deviceId = 'device_' + index.toString();
+            if (dev.length >= 0)      // disregard if device already exist
+                return;
 
             var itemContent = '<h1>' + result.name + '</h1>' +
                               'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
                               'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
-            var itemObject = $('<li id=' + deviceId + ' class=\'wrap\'>' + itemContent + '</li><br>');
+            var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
             var statusObject = $('<span>Status</span>');
 
+            // create object
+            var device = {
+                address: result.address,
+                name: result.name,
+                rssi: result.rssi,
+                statusObject: statusObject
+            };
+
+            // add to device array
+            _self.bluetoothDevices.push(device);
+
+            // append status object to <li> element
             itemObject.append(statusObject);
+
+            // append <li> element to <ul> listview
             _self.listviewObj.append(itemObject);
 
             itemObject.unbind('click');
             itemObject.click(function () {
-                _self.selectBluetoothDevice(result.address, result.name, statusObject);
+                _self.selectBluetoothDevice(_self.bluetoothDevices.length-1);
             });
 
             _self.listviewObj.listview('refresh');
@@ -134,16 +148,14 @@ function bluetooth(jqm_listview)
     // Connect
     // ----------------------------------------------------------------------------------------------------------------
 
-    this.selectBluetoothDevice = function (deviceAddress, deviceName, statusObject) {
-        navigator.notification.confirm('Connect to ' + deviceName + '?',
+    this.selectBluetoothDevice = function (deviceIndex) {
+        // get the device object
+        _self.deviceObject = _self.bluetoothDevices[deviceIndex];
+
+        navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
             function (result) {
                 if (result == 1) {
-                    _self.bluetoothSelectedDeviceAddress = deviceAddress;
-                    _self.bluetoothSelectedDeviceName = deviceName; 
-                    _self.statusObject = statusObject;
-
-                    _self.postMessage(_self.statusObject.html());
-
+                    _self.postMessage(_self.deviceObject.statusObject.html());
                     _self.connectBluetoothDevice ();
                 }
             },
@@ -152,7 +164,7 @@ function bluetooth(jqm_listview)
     }
 
     this.connectBluetoothDevice = function () {
-        var param = { address: _self.bluetoothSelectedDeviceAddress };
+        var param = { address: _self.deviceObject.address };
         bluetoothle.connect(_self.connectSuccess, _self.connectError, param);
     }
 
@@ -160,9 +172,9 @@ function bluetooth(jqm_listview)
         switch (result.status) {
             case 'connected':
                 _self.isConnected = true;
-                _self.statusObject.html('Connected');
-                _self.statusObject.css('color', '#009900');
-                _self.statusObject.css('font-weight', 'bold');
+                _self.deviceObject.statusObject.html('Connected');
+                _self.deviceObject.statusObject.css('color', '#009900');
+                _self.deviceObject.statusObject.css('font-weight', 'bold');
 
                 /*
                 var isSent = _self.sendToDevice('CMD+RTT');
@@ -174,16 +186,16 @@ function bluetooth(jqm_listview)
                 break;
 
             case 'connecting':
-                _self.statusObject.html('Connecting ...');
-                _self.statusObject.css('font-weight', 'normal');
-                _self.statusObject.css('color', '#0000FF');
+                _self.deviceObject.statusObject.html('Connecting ...');
+                _self.deviceObject.statusObject.css('font-weight', 'normal');
+                _self.deviceObject.statusObject.css('color', '#0000FF');
                 break;
 
             case 'disconnected':
                 _self.isConnected = false;
-                _self.statusObject.html('Disconnected');
-                _self.statusObject.css('font-weight', 'bold');
-                _self.statusObject.css('color', '#FF0000');
+                _self.deviceObject.statusObject.html('Disconnected');
+                _self.deviceObject.statusObject.css('font-weight', 'bold');
+                _self.deviceObject.statusObject.css('color', '#FF0000');
                 break;
         }
     }
@@ -206,7 +218,7 @@ function bluetooth(jqm_listview)
 
     this.sendToDevice = function (stringMessage) {
         var params = {
-            address: _self.bluetoothSelectedDeviceAddress,
+            address: _self.deviceObject.address,
             value: bluetoothle.bytesToEncodeString(bluetooth.stringToBytes(stringMessage + '\r\n')),
             serviceUuid: BLE.GENERIC_ACCESS,
             characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
@@ -241,7 +253,7 @@ function bluetooth(jqm_listview)
 
     this.receiveFromDevice = function () {
         var params = {
-            address: _self.bluetoothSelectedDeviceAddress,
+            address: _self.deviceObject.address,
             serviceUuid: BLE.GENERIC_ACCESS,
             characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
         };
