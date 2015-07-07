@@ -4,17 +4,19 @@
 // Date: July 4, 2015
 // ----------------------------------------------------------------------------------------------------------------
 
+var BLE = {
+    SERVICE_UUID: 'ffe0',
+    CHARACTERISTIC_UUID: 'ffe1',
+    STATUS_ERROR: -1,
+    STATUS_NONE: 0,
+    STATUS_SENDING: 2,
+    STATUS_SENT: 2,
+    STATUS_RECEIVING: 3,
+    STATUS_RECEIVED: 4
+};
+
 function bluetooth(jqm_listview)
 {
-    // ----------------------------------------------------------------------------------------------------------------
-    // Use nRF Master Control Panel (BLE) Android app
-    // to get Service and Characteristic UUID
-    // ----------------------------------------------------------------------------------------------------------------
-    var BLE = {
-        SERVICE_UUID: 'ffe0',
-        CHARACTERISTIC_UUID: 'ffe1'
-    };
-
     var _self = this;
 
     this.deviceType = '';
@@ -25,8 +27,18 @@ function bluetooth(jqm_listview)
     this.bluetoothDevices = [];
     this.deviceObject = null;
 
-    this.writeResult = {};
-    this.readResult = {};
+    this.writeResult = {
+        error: 0,
+        errorDescription: '',
+        status: BLE.STATUS_NONE,
+    };
+
+    this.readResult = {
+        error: 0,
+        errorDescription; '',
+        status: BLE.STATUS_NONE,
+        value: ''
+    };
 
     // ----------------------------------------------------------------------------------------------------------------
     // Helper Functions
@@ -266,15 +278,13 @@ function bluetooth(jqm_listview)
                 characteristicUuid: 'ffe1'
             };
 
-            /*
-            _self.writeResult = {
-                error: 0,
-                status: 'sending', 
-                value: ''
-            };
-            */
+            _self.writeResult.error = 0;
+            _self.writeResult.errorDescription = '';
+            _self.writeResult.status = BLE.STATUS_SENDING;
 
             bluetoothle.write(_self.sendSuccess, _self.sendError, params);
+            while (_self.writeResult.error == 0 && _self.writeResult.status != BLE.STATUS_SENT);
+            return _self.writeResult.error == 0 && _self.writeResult.status == BLE.STATUS_SENT;
         }
         catch (e) {
             _self.postMessage('sendToDevice Err: ' + e);
@@ -282,14 +292,17 @@ function bluetooth(jqm_listview)
     }
 
     this.sendSuccess = function (result) {
-        //_self.writeResult.error = 0;
-        //_self.writeResult.status = result.status;
-        _self.postMessage('sendSuccess: ' + JSON.stringify(result));
+        if (result.status == 'written')
+        {
+            _self.writeResult.status = BLE.STATUS_SENT;
+            _self.postMessage('sendSuccess: ' + JSON.stringify(result));
+        }
     }
 
     this.sendError = function (result) {
-        //_self.writeResult.error = 1;
-        //_self.writeResult.status = result.status;
+        _self.writeResult.error = 1;
+        _self.writeResult.errorDescription = result.status;
+        _self.writeResult.stutus = BLE.STATUS_ERROR;
         _self.postMessage('sendError: ' + JSON.stringify(result));
     }
 
@@ -304,26 +317,27 @@ function bluetooth(jqm_listview)
             characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
         };
 
-        _self.readResult = {
-            error: 0,
-            status: 'receiving',
-            value: ''
-        };
+        _self.readResult.error = 0;
+        _self.readResult.errorDescription; '';
+        _self.readResult.status = BLE.STATUS_RECEIVING;
+        _self.readResult.value = '';
 
         bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
-        while (_self.readResult.status == 'receiving');
-        return _self.readResult.error == 0 && _self.readResult.status == 'read';
+        while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
+        return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
     }
 
     this.receiveSuccess = function (result) {
-        _self.readResult.error = 0;
-        _self.readResult.value = result.value;
-        _self.readResult.status = result.status;
+        if (result == 'read')
+        {
+            _self.readResult.status = BLE.STATUS_RECEIVED;
+            _self.readResult.value = bleutoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
+        }
     }
 
     this.receiveError = function (result) {
         _self.readResult.error = 1;
-        _self.readResult.value = '';
-        _self.readResult.status = result.status;
+        _self.writeResult.stutus = BLE.STATUS_ERROR;
+        _self.readResult.errorDescription = result.status;
     }
 }
