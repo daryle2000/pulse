@@ -8,6 +8,7 @@ var BLE = {
     SERVICE_UUID: 'ffe0',
     CHARACTERISTIC_UUID: 'ffe1',
     STATUS_ERROR: -1,
+    STATUS_NOERROR: 0,
     STATUS_NONE: 0,
     STATUS_SENDING: 2,
     STATUS_SENT: 2,
@@ -234,7 +235,16 @@ function bluetooth(jqm_listview, deviceType)
         _self.deviceObject.itemObject.css('background-color', '#99ff99');
 
         // Test Transmit
-        _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+RTT'));
+        setTimeout(function () {
+            _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+RTT'));
+
+            // Test Receive
+            _self.receiveFromDevice();
+            if (_self.readResult.error == BLE.STATUS_NOERROR)
+                _self.postMessage('Received Message: ' + _self.readResult.value);
+            else
+                _self.postMessage('Received Error: ' + _self.readResult.errorDescription);
+        }, 1000);
     }
 
     this.discoverServicesError = function (result) {
