@@ -83,7 +83,6 @@ function application() {
     }
 
     this.onConnectPageLoad = function () {
-        alert('onConnectPageLoad');
         _self.scanDevices();
     }
 
@@ -92,7 +91,6 @@ function application() {
     // -------------------------------------------------------------------------------------------
 
     this.scanDevices = function () {
-        alert('scanDevices');
         _self.bluetoothObj.scanDevices();
     }
 

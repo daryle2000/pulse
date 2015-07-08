@@ -53,7 +53,6 @@ function bluetooth(jqm_listview, deviceType)
     // ----------------------------------------------------------------------------------------------------------------
 
     this.init = function () {
-        alert ('init: ' + _self.deviceType);
         try
         {
             var params = { request: true };
@@ -203,13 +202,13 @@ function bluetooth(jqm_listview, deviceType)
         switch (result.status) {
             case 'connected':
                 _self.deviceObject.isConnected = true;
-                _self.deviceObject.statusObject.html('Discovering Services ...');
+                _self.deviceObject.statusObject.text('Discovering Services ...');
                 _self.discoverServices();
                 break;
 
             case 'connecting':
                 _self.deviceObject.itemObject.css('background-color', '#ffffaa');
-                _self.deviceObject.statusObject.html('Connecting ...');
+                _self.deviceObject.statusObject.text('Connecting ...');
                 break;
 
             case 'disconnected':
@@ -231,11 +230,11 @@ function bluetooth(jqm_listview, deviceType)
 
     this.discoverServicesSuccess = function (result) {
         _self.deviceObject.isDiscovered = true;
-        _self.deviceObject.statusObject.html('Connected');
+        _self.deviceObject.statusObject.text('Connected');
         _self.deviceObject.itemObject.css('background-color', '#99ff99');
 
         // Test Transmit
-        _self.sendToDevice('CMD+RTT');
+        _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+RTT'));
     }
 
     this.discoverServicesError = function (result) {
@@ -306,10 +305,7 @@ function bluetooth(jqm_listview, deviceType)
 
     this.sendSuccess = function (result) {
         if (result.status == 'written')
-        {
             _self.writeResult.status = BLE.STATUS_SENT;
-            _self.postMessage('sendSuccess: ' + JSON.stringify(result));
-        }
     }
 
     this.sendError = function (result) {
