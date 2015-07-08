@@ -15,11 +15,11 @@ var BLE = {
     STATUS_RECEIVED: 4
 };
 
-function bluetooth(jqm_listview)
+function bluetooth(jqm_listview, deviceType)
 {
     var _self = this;
 
-    this.deviceType = '';
+    this.deviceType = deviceType;
     this.listviewObj = jqm_listview;
     this.isScanning = false;
     this.isInitialized = false;
@@ -35,7 +35,7 @@ function bluetooth(jqm_listview)
 
     this.readResult = {
         error: 0,
-        errorDescription; '',
+        errorDescription: '',
         status: BLE.STATUS_NONE,
         value: ''
     };
@@ -52,11 +52,10 @@ function bluetooth(jqm_listview)
     // Bluetooth Initialization
     // ----------------------------------------------------------------------------------------------------------------
 
-    this.init = function (deviceType) {
+    this.init = function () {
+        alert ('init: ' + _self.deviceType);
         try
         {
-            _self.deviceType = deviceType;
-
             var params = { request: true };
             bluetoothle.initialize(_self.initializeSuccess, _self.initializeError, params);
         }
