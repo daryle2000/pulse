@@ -185,7 +185,7 @@ function bluetooth(jqm_listview, deviceType)
         navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
             function (result) {
                 if (result == 1) {
-                    var statusObject = $('<span></span>');
+                    var statusObject = $('<span id=\'statusSpan_' + deviceIndex.toString() + '\'></span>');
                     _self.deviceObject.statusObject = statusObject;
                     _self.connectToBluetoothDevice();
                 }
@@ -330,23 +330,30 @@ function bluetooth(jqm_listview, deviceType)
     // ----------------------------------------------------------------------------------------------------------------
 
     this.receiveFromDevice = function () {
-        var params = {
-            address: _self.deviceObject.address,
-            serviceUuid: BLE.GENERIC_ACCESS,
-            characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
-        };
+        try
+        {
+            var params = {
+                address: _self.deviceObject.address,
+                serviceUuid: BLE.GENERIC_ACCESS,
+                characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
+            };
 
-        _self.readResult.error = 0;
-        _self.readResult.errorDescription; '';
-        _self.readResult.status = BLE.STATUS_RECEIVING;
-        _self.readResult.value = '';
+            _self.readResult.error = 0;
+            _self.readResult.errorDescription; '';
+            _self.readResult.status = BLE.STATUS_RECEIVING;
+            _self.readResult.value = '';
 
-        bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
-        while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
-        return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
+            bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
+            while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
+            return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
+        }
+        catch (e) {
+            _self.postMessage('receiveFromDevice: ' + e);
+        }
     }
 
     this.receiveSuccess = function (result) {
+        _self.postMessage('receiveSuccess: ' + JSON.stringify(result));
         if (result == 'read')
         {
             _self.readResult.status = BLE.STATUS_RECEIVED;
