@@ -84,8 +84,7 @@ function bluetooth(jqm_listview)
     // Scanning
     // ----------------------------------------------------------------------------------------------------------------
 
-    this.scan = function () {
-        _self.postMessage ('Scan');
+    this.scanDevices = function () {
         try {
             if (_self.isScanning)
                 _self.stopScan();

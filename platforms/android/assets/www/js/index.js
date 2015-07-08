@@ -45,7 +45,6 @@ function application() {
             _self.updateStatus();
 
             _self.deviceType = _self.getDeviceType();
-            alert(_self.deviceType);
 
             _self.bluetoothObj = new bluetooth($('#connectListView'));
             _self.bluetoothObj.init(_self.deviceType);
