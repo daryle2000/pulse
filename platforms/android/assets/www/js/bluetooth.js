@@ -344,8 +344,8 @@ function bluetooth(jqm_listview, deviceType)
             _self.readResult.value = '';
 
             bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
-            while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
-            return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
+            //while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
+            //return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
         }
         catch (e) {
             _self.postMessage('receiveFromDevice: ' + e);
