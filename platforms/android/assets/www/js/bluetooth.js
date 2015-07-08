@@ -53,10 +53,17 @@ function bluetooth(jqm_listview)
     // ----------------------------------------------------------------------------------------------------------------
 
     this.init = function (deviceType) {
-        _self.deviceType = deviceType;
+        try
+        {
+            _self.deviceType = deviceType;
 
-        var params = { request: true };
-        bluetoothle.initialize(_self.initializeSuccess, _self.initializeError, params);
+            var params = { request: true };
+            bluetoothle.initialize(_self.initializeSuccess, _self.initializeError, params);
+        }
+        catch (e)
+        {
+            _self.postMessage ('init: ' + e);
+        }
     }
 
     this.initializeSuccess = function (result) {
@@ -78,6 +85,7 @@ function bluetooth(jqm_listview)
     // ----------------------------------------------------------------------------------------------------------------
 
     this.scan = function () {
+        _self.postMessage ('Scan');
         try {
             if (_self.isScanning)
                 _self.stopScan();
