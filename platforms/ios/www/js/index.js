@@ -31,6 +31,7 @@ function application() {
     this.isRunning = false;
     this.executeLabelObj = $('#executeLabel');
     this.executeMessageObj = $('#executeMessage');
+    this.deviceType = '';
 
     var _self = this;
     
@@ -43,8 +44,11 @@ function application() {
         {
             _self.updateStatus();
 
+            _self.deviceType = _self.getDeviceType();
+            alert(_self.deviceType);
+
             _self.bluetoothObj = new bluetooth($('#connectListView'));
-            _self.bluetoothObj.init(_self.getDeviceType());
+            _self.bluetoothObj.init(_self.deviceType);
 
             // Event when Connect item is clicked
             $(document).on('pageshow', '#connectPage', function (event, ui) {
