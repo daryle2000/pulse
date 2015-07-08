@@ -185,7 +185,7 @@ function bluetooth(jqm_listview, deviceType)
         navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
             function (result) {
                 if (result == 1) {
-                    var statusObject = $('<span id=\'statusSpan_' + deviceIndex.toString() + '\'></span>');
+                    var statusObject = $('<span></span>');
                     _self.deviceObject.statusObject = statusObject;
                     _self.connectToBluetoothDevice();
                 }
