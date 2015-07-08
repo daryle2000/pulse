@@ -93,53 +93,60 @@ function bluetooth(jqm_listview)
     }
 
     this.startScanSuccess = function (result) {
-        if (result.status == 'scanStarted')
+        try
         {
-            _self.isScanning = true;
-            setTimeout(function () {
-                _self.stopScan();
-            }, 15000);  // if scanning, stop after 30 seconds
+            if (result.status == 'scanStarted')
+            {
+                _self.isScanning = true;
+                setTimeout(function () {
+                    _self.stopScan();
+                }, 15000);  // if scanning, stop after 30 seconds
+            }
+
+            if (result.status = 'scanResult' && result.address != undefined)
+            {
+                // find device object
+                var dev = $.grep(_self.bluetoothDevices, function (e) {
+                    return e.address == result.address;
+                });
+
+                if (dev.length > 0)      // disregard if device already exist
+                    return;
+
+                var itemContent = '<h1>' + result.name + '</h1>' +
+                                  'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
+                                  'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
+
+                var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
+
+                // append <li> element to <ul> listview
+                _self.listviewObj.append(itemObject);
+
+                // create object
+                var device = {
+                    address: result.address,
+                    name: result.name,
+                    rssi: result.rssi,
+                    itemObject: itemObject,
+                    statusObject: null, 
+                    isConnected: false,
+                    isDiscovered: false
+                };
+
+                // add to device array
+                _self.bluetoothDevices.push(device);
+
+                itemObject.unbind('click');
+                itemObject.click(function () {
+                    _self.selectBluetoothDevice(_self.bluetoothDevices.length-1);
+                });
+
+                _self.listviewObj.listview('refresh');
+            }
         }
-
-        if (result.status = 'scanResult' && result.address != undefined)
+        catch (e)
         {
-            // find device object
-            var dev = $.grep(_self.bluetoothDevices, function (e) {
-                return e.address == result.address;
-            });
-
-            if (dev.length > 0)      // disregard if device already exist
-                return;
-
-            var itemContent = '<h1>' + result.name + '</h1>' +
-                              'RSSI: <span style=\'color:#aa0000\'>' + result.rssi + '</span><br>' +
-                              'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
-
-            var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
-
-            // append <li> element to <ul> listview
-            _self.listviewObj.append(itemObject);
-
-            // create object
-            var device = {
-                address: result.address,
-                name: result.name,
-                rssi: result.rssi,
-                itemObject: itemObject,
-                statusObject: null, 
-                isConnected: false,
-                isDiscovered: false
-            };
-
-            // add to device array
-            _self.bluetoothDevices.push(device);
-
-            itemObject.unbind('click');
-            itemObject.click(function () {
-                _self.selectBluetoothDevice(_self.bluetoothDevices.length-1);
-            });
-
-            _self.listviewObj.listview('refresh');
+            _self.postMessage ('startScanSuccess: ' + e);
         }
     }
 
