@@ -185,7 +185,7 @@ function bluetooth(jqm_listview, deviceType)
         navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
             function (result) {
                 if (result == 1) {
-                    var statusObject = $('<span id=\'statusSpan_' + deviceIndex.toString() + '\'></span>');
+                    var statusObject = $('<span></span>');
                     _self.deviceObject.statusObject = statusObject;
                     _self.connectToBluetoothDevice();
                 }
@@ -296,8 +296,8 @@ function bluetooth(jqm_listview, deviceType)
             var params = {
                 address: _self.deviceObject.address,
                 value: bluetoothle.bytesToEncodedString(bluetoothle.stringToBytes(stringMessage + '\r\n')),
-                serviceUuid: 'ffe0',
-                characteristicUuid: 'ffe1'
+                serviceUuid: BLE.SERVICE_UUID,
+                characteristicUuid: BLE.CHARACTERISTIC_UUID
             };
 
             _self.writeResult.error = 0;
@@ -334,8 +334,8 @@ function bluetooth(jqm_listview, deviceType)
         {
             var params = {
                 address: _self.deviceObject.address,
-                serviceUuid: BLE.GENERIC_ACCESS,
-                characteristicUuid: BLE.GENERIC_ACCESS_CHARACTERISTIC_RXTX
+                serviceUuid: BLE.SERVICE_UUID,
+                characteristicUuid: BLE.CHARACTERISTIC_UUID
             };
 
             _self.readResult.error = 0;
@@ -362,6 +362,7 @@ function bluetooth(jqm_listview, deviceType)
     }
 
     this.receiveError = function (result) {
+        _self.postMessage('receiveError: ' + JSON.stringify(result));
         _self.readResult.error = 1;
         _self.writeResult.stutus = BLE.STATUS_ERROR;
         _self.readResult.errorDescription = result.status;
