@@ -91,7 +91,7 @@ function application() {
     // -------------------------------------------------------------------------------------------
 
     this.scanDevices = function () {
-        _self.bluetoothObj.scan();
+        _self.bluetoothObj.scanDevices();
     }
 
     this.stopScanningDevices = function () {
