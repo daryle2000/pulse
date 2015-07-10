@@ -364,15 +364,15 @@ function bluetooth()
                     _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBED;
                     _self.deviceObject.isSubscribed = true;
 
-                    if (_self.connectCompleteCallback != null)
-                        _self.connectCallback(_self.deviceObject);
+                    if (_self.callbacks.connectCompleted != null)
+                        _self.callbacks.connectCompleted(_self.deviceObject);
 
                     break;
 
                 case 'subscribedResult':
                     _self.subscriptionResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
-                    if (_self.dataArrivalCompleteCallback != null)
-                        _self.dataArrivalCompleteCallback(_self.deviceObject, _self.subscriptionResult);
+                    if (_self.callbacks.dataArrival != null)
+                        _self.callbacks.dataArrival (_self.deviceObject, _self.subscriptionResult);
                     break;
             }
         }
@@ -401,8 +401,8 @@ function bluetooth()
         }
 
         this.closeSuccess = function (result) {
-            if (_self.closeCompleteCallback != null)
-                _self.closeCompleteCallback(_self.deviceObject);
+            if (_self.callbacks.closeCompleted != null)
+                _self.callbacks.closeCompleted (_self.deviceObject);
         }
 
         // ----------------------------------------------------------------------------------------------------------------
@@ -434,8 +434,8 @@ function bluetooth()
         this.sendSuccess = function (result) {
             if (result.status == 'written') {
                 _self.writeResult.status = BLE.STATUS_SENT;
-                if (_self.sendCompleteCallback != null)
-                    _self.sendCompleteCallback(_self.deviceObject, _self.writeResult); 
+                if (_self.callbacks.sendCompleted != null)
+                    _self.callbacks.sendCompleted (_self.deviceObject, _self.writeResult);
             }
         }
 
@@ -479,8 +479,8 @@ function bluetooth()
                     _self.readResult.status = BLE.STATUS_RECEIVED;
                     _self.readResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
 
-                    if (_self.receiveCompleteCallback != null)
-                        _self.receiveCompleteCallback(_self.deviceObject, _self.readResult);
+                    if (_self.callbacks.receiveCompleted != null)
+                        _self.callbacks.receiveCompleted (_self.deviceObject, _self.readResult);
                 }
             }
             catch (e) {

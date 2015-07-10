@@ -129,7 +129,6 @@ function application() {
     // -------------------------------------------------------------------------------------------
 
     this.scanDevices = function () {
-        _self.displayMessage ('scanDevices','');
         _self.bluetoothObj.scanDevices();
     }
 
