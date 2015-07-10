@@ -245,12 +245,6 @@ function bluetooth(jqm_listview, deviceType)
         _self.deviceObject.isDiscovered = true;
         _self.deviceObject.statusObject.text('Connected');
         _self.deviceObject.itemObject.css('background-color', '#99ff99');
-
-        // Test Transmit
-        setTimeout(function () {
-            // Test Transmit
-            _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+RTT'));
-        }, 1000);
     }
 
     this.discoverServicesError = function (result) {
@@ -281,7 +275,13 @@ function bluetooth(jqm_listview, deviceType)
         switch (result.status) {
             case 'subscribed':
                 _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBED;
-                _self.postMessage('Subscription Success!!!');
+
+                // Test Transmit
+                setTimeout(function () {
+                    // Test Transmit
+                    _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+ULG;green'));
+                }, 1000);
+
                 break;
 
             case 'subscribedResult':
