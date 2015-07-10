@@ -32,6 +32,7 @@ function bluetooth(jqm_listview, deviceType)
         error: 0,
         errorDescription: '',
         status: BLE.STATUS_NONE,
+        value: ''
     };
 
     this.readResult = {
@@ -236,14 +237,11 @@ function bluetooth(jqm_listview, deviceType)
 
         // Test Transmit
         setTimeout(function () {
+            // Test Transmit
             _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+RTT'));
 
             // Test Receive
-            _self.receiveFromDevice();
-            if (_self.readResult.error == BLE.STATUS_NOERROR)
-                _self.postMessage('Received Message: ' + _self.readResult.value);
-            else
-                _self.postMessage('Received Error: ' + _self.readResult.errorDescription);
+            _self.loopRead();
         }, 1000);
     }
 
@@ -303,6 +301,7 @@ function bluetooth(jqm_listview, deviceType)
             _self.writeResult.error = 0;
             _self.writeResult.errorDescription = '';
             _self.writeResult.status = BLE.STATUS_SENDING;
+            _self.writeResult.value = stringMessage;
 
             bluetoothle.write(_self.sendSuccess, _self.sendError, params);
             while (_self.writeResult.error == 0 && _self.writeResult.status != BLE.STATUS_SENT);
@@ -328,6 +327,13 @@ function bluetooth(jqm_listview, deviceType)
     // ----------------------------------------------------------------------------------------------------------------
     // Receiving 
     // ----------------------------------------------------------------------------------------------------------------
+
+    this.loopRead = function () {
+        _self.receiveFromDevice();
+        setTimeout(function () {
+            _self.loopRead();
+        }, 5000);
+    }
 
     this.receiveFromDevice = function () {
         try
