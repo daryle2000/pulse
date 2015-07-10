@@ -13,7 +13,9 @@ var BLE = {
     STATUS_SENDING: 2,
     STATUS_SENT: 2,
     STATUS_RECEIVING: 3,
-    STATUS_RECEIVED: 4
+    STATUS_RECEIVED: 4,
+    STATUS_SUBSCRIBING: 5,
+    STATUS_SUBSCRIBED: 6
 };
 
 function bluetooth(jqm_listview, deviceType)
@@ -36,6 +38,13 @@ function bluetooth(jqm_listview, deviceType)
     };
 
     this.readResult = {
+        error: 0,
+        errorDescription: '',
+        status: BLE.STATUS_NONE,
+        value: ''
+    };
+
+    this.subscriptionResult = {
         error: 0,
         errorDescription: '',
         status: BLE.STATUS_NONE,
@@ -231,6 +240,8 @@ function bluetooth(jqm_listview, deviceType)
     }
 
     this.discoverServicesSuccess = function (result) {
+        _self.subscribe();
+
         _self.deviceObject.isDiscovered = true;
         _self.deviceObject.statusObject.text('Connected');
         _self.deviceObject.itemObject.css('background-color', '#99ff99');
@@ -239,14 +250,50 @@ function bluetooth(jqm_listview, deviceType)
         setTimeout(function () {
             // Test Transmit
             _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+RTT'));
-
-            // Test Receive
-            _self.loopRead();
         }, 1000);
     }
 
     this.discoverServicesError = function (result) {
         _self.postMessage("discoverError: " + JSON.stringify(result));
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // Subscribe
+    // ----------------------------------------------------------------------------------------------------------------
+
+    this.subscribe = function () {
+        var params = {
+            address: _self.deviceObject.address,
+            serviceUuid: BLE.SERVICE_UUID,
+            characteristicUuid: BLE.CHARACTERISTIC_UUID,
+            isNotification: true
+        };
+
+        _self.subscriptionResult.error = 0;
+        _self.subscriptionResult.errorDescription = '';
+        _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBING;
+        _self.writeResult.value = '';
+
+        bluetoothle.subscribe(_self.subscribeSuccess, _self.subscribeError, params);
+    }
+
+    this.subscribeSuccess = function (result) {
+        switch (result.status) {
+            case 'subscribed':
+                _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBED;
+                _self.postMessage('Subscription Success!!!');
+                break;
+
+            case 'subscribedResult':
+                _self.subscriptionResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
+                _self.postMessage('Subscription Result: ' + _self.subscriptionResult.value);
+                break;
+        }
+    }
+
+    this.subscribeError = function (result) {
+        _self.subscriptionResult.error = 1;
+        _self.subscriptionResult.errorDescription = result.status;
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -327,13 +374,6 @@ function bluetooth(jqm_listview, deviceType)
     // ----------------------------------------------------------------------------------------------------------------
     // Receiving 
     // ----------------------------------------------------------------------------------------------------------------
-
-    this.loopRead = function () {
-        _self.receiveFromDevice();
-        setTimeout(function () {
-            _self.loopRead();
-        }, 5000);
-    }
 
     this.receiveFromDevice = function () {
         try
