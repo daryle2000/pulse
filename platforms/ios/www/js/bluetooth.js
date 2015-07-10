@@ -366,7 +366,7 @@ function bluetooth(jqm_listview, deviceType)
             if (result.status == 'read')
             {
                 _self.readResult.status = BLE.STATUS_RECEIVED;
-                _self.readResult.value = bleutoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
+                _self.readResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
 
                 _self.postMessage('Value ---> ' + _self.readResult.value);
             }
