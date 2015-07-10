@@ -45,9 +45,9 @@ function application() {
             _self.updateStatus();
             _self.deviceType = _self.getDeviceType();
 
-            /*
             _self.bluetoothObj = new bluetooth();
 
+            /*
             // set parameters
             _self.bluetoothObj.deviceType = _self.deviceType;
             _self.bluetoothObj.listviewObj = $('#connectListView');
