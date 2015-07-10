@@ -51,7 +51,7 @@ function application() {
             lastCount: 0,
             isTimedOut: false,
             isDataAvailable: false,
-            callback: _self.responseIsAvailable
+            callback: null
         };
 
         var _self = this;
@@ -63,6 +63,8 @@ function application() {
         this.onDeviceReady = function () {
             try
             {
+                _self.responseObj.callback = _self.responseInterpreter;
+
                 _self.updateStatus();
                 _self.deviceType = _self.getDeviceType();
 
@@ -121,7 +123,7 @@ function application() {
             _self.responseObj.isDataAvailable = false;
         }
 
-        this.responseIsAvailable = function (response) {
+        this.responseInterpreter = function (response) {
             // This is where to interpret command responses
 
             _self.displayMessage('responseIsAvailable', response);
