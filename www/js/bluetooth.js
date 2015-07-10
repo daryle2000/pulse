@@ -14,39 +14,43 @@ var BLE = {
     STATUS_SENT: 2,
     STATUS_RECEIVING: 3,
     STATUS_RECEIVED: 4,
-    STATUS_SUBSCRIBING: 5,
-    STATUS_SUBSCRIBED: 6
+    STATUS_DISCOVERING: 5,
+    STATUS_DISCOVERED: 6,
+    STATUS_SUBSCRIBING: 7,
+    STATUS_SUBSCRIBED: 8
 };
 
-function bluetooth(jqm_listview, deviceType)
+function bluetooth()
 {
     var _self = this;
 
     this.deviceType = deviceType;
+    this.connectCallback = null;
     this.listviewObj = jqm_listview;
+
     this.isScanning = false;
     this.isInitialized = false;
 
     this.bluetoothDevices = [];
     this.deviceObject = null;
 
-    this.writeResult = {
+    this.errorResult = {
         error: 0,
-        errorDescription: '',
+        errorTask: '',
+        errorDescription: ''
+    };
+
+    this.writeResult = {
         status: BLE.STATUS_NONE,
         value: ''
     };
 
     this.readResult = {
-        error: 0,
-        errorDescription: '',
         status: BLE.STATUS_NONE,
         value: ''
     };
 
     this.subscriptionResult = {
-        error: 0,
-        errorDescription: '',
         status: BLE.STATUS_NONE,
         value: ''
     };
@@ -57,6 +61,37 @@ function bluetooth(jqm_listview, deviceType)
 
     this.postMessage = function (msg) {
         navigator.notification.alert(msg, null, 'Notification');
+    }
+
+    this.clearDeviceList = function () {
+        _self.bluetoothDevices.length = 0;    // clear array
+        _self.listviewObj.empty();
+    }
+
+    this.clearCurrentDeviceStatus = function () {
+        if (_self.deviceObject != null || !isNaN(_self.deviceObject)) {
+            _self.deviceObject.isConnected = false;
+            _self.deviceObject.isDiscovered = false;
+            _self.deviceObject.isSubscribed = false;
+        }
+    }
+
+    this.errorHandler = function (result) {
+        _self.errorResult.error = 1;
+        _self.errorResult.errorTask = result.error;
+        _self.errorResult.errorDescription = result.message;
+
+        _self.postMessage(JSON.stringify(error));
+    }
+
+    this.clearError = function () {
+        _self.errorResult.error = 0;
+        _self.errorResult.errorTask = '';
+        _self.errorResult.errorDescription = '';
+    }
+
+    this.raiseError = function (owner, message) {
+        _self.errorHandler({ error: owner, message: message });
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -71,7 +106,7 @@ function bluetooth(jqm_listview, deviceType)
         }
         catch (e)
         {
-            _self.postMessage ('init: ' + e);
+            _self.raiseError('init', e);
         }
     }
 
@@ -81,12 +116,7 @@ function bluetooth(jqm_listview, deviceType)
 
     this.initializeError = function (result) {
         _self.isInitialized = false;
-        _self.postMessage("Initialize Error : " + JSON.stringify(result));
-    }
-
-    this.clearDeviceList = function () {
-        _self.bluetoothDevices.length = 0;    // clear array
-        _self.listviewObj.empty();
+        _self.errorHandler(result);
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -101,10 +131,10 @@ function bluetooth(jqm_listview, deviceType)
             _self.clearDeviceList();
 
             var paramsObj = { serviceUuids: [] };
-            bluetoothle.startScan(_self.startScanSuccess, _self.startScanError, paramsObj);
+            bluetoothle.startScan(_self.startScanSuccess, _self.errorHandler, paramsObj);
         }
         catch (e) {
-            _self.postMessage("Exception: " + e);
+            _self.raiseError('scanDevices', e);
         }
     }
 
@@ -144,9 +174,10 @@ function bluetooth(jqm_listview, deviceType)
                     name: result.name,
                     rssi: result.rssi,
                     itemObject: itemObject,
-                    statusObject: null, 
+                    statusObject: null,
                     isConnected: false,
-                    isDiscovered: false
+                    isDiscovered: false,
+                    isSubscribed: false
                 };
 
                 // add to device array
@@ -162,12 +193,8 @@ function bluetooth(jqm_listview, deviceType)
         }
         catch (e)
         {
-            _self.postMessage ('startScanSuccess: ' + e);
+            _self.raiseError('startScanSuccess', e);
         }
-    }
-
-    this.startScanError = function (error) {
-        _self.postMessage('Start Scan Error : ' + JSON.stringify(error));
     }
 
     this.stopScan = function () {
@@ -181,9 +208,6 @@ function bluetooth(jqm_listview, deviceType)
         _self.postMessage('Scanning has stopped!');
     }
 
-    this.stopScanError = function () {
-    }
-
     // ----------------------------------------------------------------------------------------------------------------
     // Connect
     // ----------------------------------------------------------------------------------------------------------------
@@ -195,8 +219,15 @@ function bluetooth(jqm_listview, deviceType)
         navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
             function (result) {
                 if (result == 1) {
-                    var statusObject = $('<span></span>');
+                    // Clear device status and error
+                    _self.clearError();
+                    _self.clearCurrentDeviceStatus();
+
+                    // Create object to display status
+                    var statusObject = $('<span>Status Here</span>');
                     _self.deviceObject.statusObject = statusObject;
+
+                    // connect to current selected device
                     _self.connectToBluetoothDevice();
                 }
             },
@@ -206,7 +237,7 @@ function bluetooth(jqm_listview, deviceType)
 
     this.connectToBluetoothDevice = function () {
         var param = { address: _self.deviceObject.address };
-        bluetoothle.connect(_self.connectSuccess, _self.connectError, param);
+        bluetoothle.connect(_self.connectSuccess, _self.errorHandler, param);
     }
 
     this.connectSuccess = function (result) {
@@ -226,29 +257,70 @@ function bluetooth(jqm_listview, deviceType)
                 _self.deviceObject.itemObject.css('background-color', '#ff5555');
                 _self.deviceObject.isConnected = false;
                 _self.deviceObject.isDiscovered = false;
+                _self.deviceObject.isSubscribed = false;
                 break;
         }
     }
 
-    this.connectError = function (result) {
-        _self.postMessage("Connect Error : " + JSON.stringify(result));
-    }
+    // ----------------------------------------------------------------------------------------------------------------
+    // Discover
+    // ----------------------------------------------------------------------------------------------------------------
 
     this.discoverServices = function () {
-        var params = { address: _self.deviceObject.address };
-        bluetoothle.discover(_self.discoverServicesSuccess, _self.discoverServicesError, params);
+        var params;
+        switch (_self.deviceType)
+        {
+            case DEVICE_TYPE.ANDROID:
+                params = { address: _self.deviceObject.address };
+                bluetoothle.discover(_self.discoverServicesSuccess, _self.errorHandler, params);
+                break;
+
+            case DEVICE_TYPE.IPHONE:
+            case DEVICE_TYPE.IPAD:
+                params = { 
+                    address: _self.deviceObject.address, 
+                    serviceUuids: [BLE.SERVICE_UUID]
+                };
+                bluetoothle.services(_self.servicesSuccess, _self.errorHandler, params);
+                break;
+        }
     }
 
+    // ----------------------------------------------------------------------------------------------------------------
+    // Discover ANDROID
+    // ----------------------------------------------------------------------------------------------------------------
     this.discoverServicesSuccess = function (result) {
-        _self.subscribe();
-
         _self.deviceObject.isDiscovered = true;
-        _self.deviceObject.statusObject.text('Connected');
-        _self.deviceObject.itemObject.css('background-color', '#99ff99');
+        _self.subscribe();
     }
 
-    this.discoverServicesError = function (result) {
-        _self.postMessage("discoverError: " + JSON.stringify(result));
+    // ----------------------------------------------------------------------------------------------------------------
+    // Discover iOS
+    // ----------------------------------------------------------------------------------------------------------------
+
+    this.servicesSuccess = function (result) {
+        var params = {
+            address: _self.deviceObject.address,
+            serviceUuid: BLE.SERVICE_UUID,
+            characteristicUuids: [BLE.CHARACTERISTIC_UUID]
+        };
+
+        bluetoothle.characteristics(_self.characteristicsSuccess, _self.errorHandler, params);
+    }
+
+    this.characteristicsSuccess = function (result) {
+        var params = {
+            address: _self.deviceObject.address,
+            serviceUuid: BLE.SERVICE_UUID,
+            characteristicUuid: BLE.CHARACTERISTIC_UUID
+        };
+
+        bluetoothle.descriptors(_self.descriptorsSuccess, _self.errorHandler, params);
+    }
+
+    this.descriptorsSuccess = function (result) {
+        _self.deviceObject.isDiscovered = true;
+        _self.subscribe();
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -256,6 +328,9 @@ function bluetooth(jqm_listview, deviceType)
     // ----------------------------------------------------------------------------------------------------------------
 
     this.subscribe = function () {
+        _self.deviceObject.statusObject.text('Connected');
+        _self.deviceObject.itemObject.css('background-color', '#99ff99');
+
         var params = {
             address: _self.deviceObject.address,
             serviceUuid: BLE.SERVICE_UUID,
@@ -263,18 +338,17 @@ function bluetooth(jqm_listview, deviceType)
             isNotification: true
         };
 
-        _self.subscriptionResult.error = 0;
-        _self.subscriptionResult.errorDescription = '';
         _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBING;
-        _self.writeResult.value = '';
+        _self.subscriptionResult.value = '';
 
-        bluetoothle.subscribe(_self.subscribeSuccess, _self.subscribeError, params);
+        bluetoothle.subscribe(_self.subscribeSuccess, _self.errorHandler, params);
     }
 
     this.subscribeSuccess = function (result) {
         switch (result.status) {
             case 'subscribed':
                 _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBED;
+                _self.deviceObject.isSubscribed = true;
 
                 // Test Transmit
                 setTimeout(function () {
@@ -291,27 +365,22 @@ function bluetooth(jqm_listview, deviceType)
         }
     }
 
-    this.subscribeError = function (result) {
-        _self.subscriptionResult.error = 1;
-        _self.subscriptionResult.errorDescription = result.status;
-    }
-
     // ----------------------------------------------------------------------------------------------------------------
     // Disconnect
     // ----------------------------------------------------------------------------------------------------------------
 
     this.disconnectDevice = function () {
         var params = { address: _self.deviceObject.address };
-        bluetoothle.disconnect(_self.disconnectSuccess, _self.disconnectError, params);
+        bluetoothle.disconnect(_self.disconnectSuccess, _self.errorHandler, params);
     }
 
     this.disconnectSuccess = function (result) {
         switch (result.status) {
             case 'disconnected':
-                _self.deviceObject.isConnected = false;
-                _self.deviceObject.isDiscovered = false;
+                _self.clearCurrentDeviceStatus();
+
                 var params = { address: _self.deviceObject.address };
-                bluetoothle.close(_self.closeSuccess, _self.closeError, params);
+                bluetoothle.close(_self.closeSuccess, _self.errorHandler, params);
                 break;
 
             case 'disconnecting':
@@ -319,16 +388,8 @@ function bluetooth(jqm_listview, deviceType)
         }
     }
 
-    this.disconnectError = function (result) {
-        _self.postMessage("disconnectError: " + JSON.stringify(result));
-    }
-
     this.closeSuccess = function (result) {
         _self.postMessage("closeSuccess: " + JSON.stringify(result));
-    }
-
-    this.closeError = function (result) {
-        _self.postMessage("closeError: " + JSON.stringify(result));
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -344,9 +405,9 @@ function bluetooth(jqm_listview, deviceType)
                 serviceUuid: BLE.SERVICE_UUID,
                 characteristicUuid: BLE.CHARACTERISTIC_UUID
             };
+            
+            _self.clearError();
 
-            _self.writeResult.error = 0;
-            _self.writeResult.errorDescription = '';
             _self.writeResult.status = BLE.STATUS_SENDING;
             _self.writeResult.value = stringMessage;
 
@@ -355,7 +416,7 @@ function bluetooth(jqm_listview, deviceType)
             return _self.writeResult.error == 0 && _self.writeResult.status == BLE.STATUS_SENT;
         }
         catch (e) {
-            _self.postMessage('sendToDevice Err: ' + e);
+            _self.raiseError('sendToDevice', e);
         }
     }
 
@@ -365,10 +426,8 @@ function bluetooth(jqm_listview, deviceType)
     }
 
     this.sendError = function (result) {
-        _self.writeResult.error = 1;
-        _self.writeResult.errorDescription = result.status;
         _self.writeResult.stutus = BLE.STATUS_ERROR;
-        _self.postMessage('sendError: ' + JSON.stringify(result));
+        _self.errorHandler(result);
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -384,17 +443,17 @@ function bluetooth(jqm_listview, deviceType)
                 characteristicUuid: BLE.CHARACTERISTIC_UUID
             };
 
-            _self.readResult.error = 0;
-            _self.readResult.errorDescription; '';
+            _self.clearError();
+
             _self.readResult.status = BLE.STATUS_RECEIVING;
             _self.readResult.value = '';
 
             bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
-            //while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
-            //return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
+            while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
+            return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
         }
         catch (e) {
-            _self.postMessage('receiveFromDevice: ' + e);
+            _self.raiseError('receiveFromDevice', e);
         }
     }
 
@@ -412,14 +471,12 @@ function bluetooth(jqm_listview, deviceType)
             }
         }
         catch (e) {
-            _self.postMessage('receiveSuccess Exception: ' + e);
+            _self.raiseError('receiveSuccess', e);
         }
     }
 
     this.receiveError = function (result) {
-        _self.postMessage('receiveError: ' + JSON.stringify(result));
-        _self.readResult.error = 1;
         _self.writeResult.stutus = BLE.STATUS_ERROR;
-        _self.readResult.errorDescription = result.status;
+        _self.errorHandler(result);
     }
 }
