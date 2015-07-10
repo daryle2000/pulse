@@ -42,6 +42,16 @@ function application() {
     this.deviceType = '';
     this.dataReceived = '';
 
+    this.responseObj = {
+        value: '',
+        startTime: 0,
+        currentTime: 0,
+        lastCount: 0,
+        isTimedOut: false,
+        isDataAvailable: false,
+        callback: _self.responseIsAvailable
+    };
+
     var _self = this;
     
     this.initialize = function () {
@@ -95,44 +105,25 @@ function application() {
 
     this.sendCommand = function (cmd) {
         _self.dataReceived = '';
+        _self.clearResponseObject();
+
         _self.bluetoothObj.sendToDevice(cmd);
     }
 
-    this.getResponse = function () {
-        /*
-        ("RES+")	// respond signature
-        #define CMD_RES_OK					("RES+OK")
-        #define CMD_RES_ERR					("RES+ERR")
-        */
-        var startTime = Date.now();
-        var currentTime = startTime;
-        var isResponseAvailable = false;
-        var isTimedOut = false;
-
-        var lastCount = 0;
-        var ret = '';
-
-        while (!isTimedOut && !isResponseAvailable) {
-            isResponseAvailable = _self.dataReceived.endsWith('RES+OK') || _self.dataReceived.endsWith('RES+ERR');
-
-            if (_self.dataReceived.length > lastCount) {
-                lastCount = _self.dataReceived.length;
-                startTime = currentTime;
-            }
-
-            if (!isResponseAvailable) {
-                currentTime = Date.now();
-                isTimedOut = (currentTime - startTime) >= BLUETOOTH.RECEIVE_TIMEOUT;
-            }
-        }
-
-        if (!isTimedOut)
-            ret = _self.dataReceived;
-
-        _self.dataReceived = '';
-        return ret;
+    this.clearResponseObject = function () {
+        _self.responseObj.value = '';
+        _self.responseObj.startTime = Date.now();
+        _self.responseObj.currentTime = _self.responseObj.startTime;
+        _self.responseObj.lastCount = 0;
+        _self.responseObj.isTimedOut = false;
+        _self.responseObj.isDataAvailable = false;
     }
 
+    this.responseIsAvailable = function (response) {
+        // This is where to interpret command responses
+
+        _self.displayMessage('responseIsAvailable', response);
+    }
 
     // ----------------------------------------------------------------------------------------------------------------
     // Bluetooth Callbacks
@@ -152,7 +143,32 @@ function application() {
     }
 
     this.dataArrival = function (deviceObject, subscriptionResult) {
-        _self.dataReceived += subscriptionResult.value;
+        try
+        {
+            _self.dataReceived += subscriptionResult.value;
+
+            _self.responseObj.isDataAvailable = _self.dataReceived.endsWith('RES+OK') || _self.dataReceived.endsWith('RES+ERR');
+
+            if (_self.dataReceived.length > _self.responseObj.lastCount) {
+                _self.responseObj.lastCount = _self.dataReceived.length;
+                _self.responseObj.startTime = _self.responseObj.currentTime;
+            }
+
+            if (!_self.responseObj.isDataAvailable) {
+                _self.responseObj.currentTime = Date.now();
+                _self.responseObj.isTimedOut = (_self.responseObj.currentTime - _self.responseObj.startTime) >= BLUETOOTH.RECEIVE_TIMEOUT;
+            }
+
+            if (!_self.responseObj.isTimedOut && _self.responseObj.callback != null) {
+                var param = _self.dataReceived;
+                _self.dataReceived = '';
+
+                _self.responseObj.callback(param);
+            }
+        }
+        catch (e) {
+            _self.displayMessage('dataArrival: ', e);
+        }
     }
 
     this.closeCompleted = function (deviceObject) {
