@@ -47,8 +47,19 @@ function application() {
             _self.deviceType = _self.getDeviceType();
 
             _self.bluetoothObj = new bluetooth();
+
+            // set parameters
             _self.bluetoothObj.deviceType = _self.deviceType;
             _self.bluetoothObj.listviewObj = $('#connectListView');
+
+            // set callbacks
+            _self.bluetoothObj.connectCompleteCallback = null;            // connectCallback(deviceObject);
+            _self.bluetoothObj.sendCompleteCallback = null;               // sendCompleteCallback(deviceObject, writeResult); 
+            _self.bluetoothObj.receiveCompleteCallback = null;            // receiveCompleteCallback(deviceObject, readResult);
+            _self.bluetoothObj.dataArrivalCompleteCallback = null;        // dataArrivalCompleteCallback(deviceObject, subscriptionResult);
+            _self.bluetoothObj.closeCompleteCallback = null;              // closeCompleteCallback(deviceObject);
+
+            // initialize bluetooth
             _self.bluetoothObj.init();
 
             // Event when Connect item is clicked
@@ -70,6 +81,33 @@ function application() {
             _self.bluetoothObj.postMessage(e);
         }
     }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // Bluetooth Callbacks
+    // ----------------------------------------------------------------------------------------------------------------
+
+    this.connectCompleteCallback = function (deviceObject) {
+        _self.displayMessage('connectCompleteCallback', deviceObject.name + ' is now connected!');
+        _self.bluetoothObj.sendToDevice('CMD+ULG;green');
+    }
+
+    this.sendCompleteCallback = function (deviceObject, writeResult) {
+        _self.displayMessage('sendCompleteCallback', writeResult.value);
+    }
+
+    this.receiveCompleteCallback = function (deviceObject, readResult) {
+        _self.displayMessage('receiveCompleteCallback', readResult.value);
+    }
+
+    this.dataArrivalCompleteCallback = function (deviceObject, subscriptionResult) {
+        _self.displayMessage ('dataArrivalCompleteCallback', subscriptionResult.value);
+    }
+
+    this.closeCompleteCallback = function (deviceObject) {
+        _self.displayMessage('closeCompleteCallback', deviceObject.name + ' is disconnected!');
+    }
+
+    // ---
 
     this.updateStatus = function () {
         // ---
@@ -183,5 +221,9 @@ function application() {
             return DEVICE_TYPE.BLACKBERRY;
 
         return DEVICE_TYPE.UNDETECTED;
+    }
+
+    this.displayMessage = function (title, message) {
+        navigator.notification.alert (message, null, title);
     }
 }

@@ -26,13 +26,21 @@ function bluetooth()
 
     this.deviceType = deviceType;
     this.connectCallback = null;
-    this.listviewObj = jqm_listview;
+    this.listviewObj = null;
 
     this.isScanning = false;
     this.isInitialized = false;
 
     this.bluetoothDevices = [];
     this.deviceObject = null;
+
+    // Callback
+
+    this.connectCompleteCallback = null;            // connectCallback(deviceObject);
+    this.sendCompleteCallback = null;               // sendCompleteCallback(deviceObject, writeResult); 
+    this.receiveCompleteCallback = null;            // receiveCompleteCallback(deviceObject, readResult);
+    this.dataArrivalCompleteCallback = null;        // dataArrivalCompleteCallback(deviceObject, subscriptionResult);
+    this.closeCompleteCallback = null;              // closeCompleteCallback(deviceObject);
 
     this.errorResult = {
         error: 0,
@@ -350,17 +358,15 @@ function bluetooth()
                 _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBED;
                 _self.deviceObject.isSubscribed = true;
 
-                // Test Transmit
-                setTimeout(function () {
-                    // Test Transmit
-                    _self.postMessage('Transmit Successful: ' + _self.sendToDevice('CMD+ULG;green'));
-                }, 1000);
+                if (_self.connectCompleteCallback != null)
+                    _self.connectCallback(_self.deviceObject);
 
                 break;
 
             case 'subscribedResult':
                 _self.subscriptionResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
-                _self.postMessage('Subscription Result: ' + _self.subscriptionResult.value);
+                if (_self.dataArrivalCompleteCallback != null)
+                    _self.dataArrivalCompleteCallback(_self.deviceObject, _self.subscriptionResult);
                 break;
         }
     }
@@ -389,7 +395,8 @@ function bluetooth()
     }
 
     this.closeSuccess = function (result) {
-        _self.postMessage("closeSuccess: " + JSON.stringify(result));
+        if (_self.closeCompleteCallback != null)
+            _self.closeCompleteCallback(_self.deviceObject);
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -412,8 +419,6 @@ function bluetooth()
             _self.writeResult.value = stringMessage;
 
             bluetoothle.write(_self.sendSuccess, _self.sendError, params);
-            while (_self.writeResult.error == 0 && _self.writeResult.status != BLE.STATUS_SENT);
-            return _self.writeResult.error == 0 && _self.writeResult.status == BLE.STATUS_SENT;
         }
         catch (e) {
             _self.raiseError('sendToDevice', e);
@@ -421,8 +426,11 @@ function bluetooth()
     }
 
     this.sendSuccess = function (result) {
-        if (result.status == 'written')
+        if (result.status == 'written') {
             _self.writeResult.status = BLE.STATUS_SENT;
+            if (_self.sendCompleteCallback != null)
+                _self.sendCompleteCallback(_self.deviceObject, _self.writeResult); 
+        }
     }
 
     this.sendError = function (result) {
@@ -449,8 +457,6 @@ function bluetooth()
             _self.readResult.value = '';
 
             bluetoothle.read(_self.receiveSuccess, _self.receiveError, params);
-            while (_self.readResult.error == 0 && _self.readResult.status != BLE.STATUS_RECEIVED);
-            return _self.readResult.error == 0 && _self.readResult.status == BLE.STATUS_RECEIVED;
         }
         catch (e) {
             _self.raiseError('receiveFromDevice', e);
@@ -467,7 +473,8 @@ function bluetooth()
                 _self.readResult.status = BLE.STATUS_RECEIVED;
                 _self.readResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
 
-                _self.postMessage('Value ---> ' + _self.readResult.value);
+                if (_self.receiveCompleteCallback != null)
+                    _self.receiveCompleteCallback(_self.deviceObject, _self.readResult);
             }
         }
         catch (e) {
