@@ -43,12 +43,9 @@ function application() {
         try
         {
             _self.updateStatus();
-
             _self.deviceType = _self.getDeviceType();
-
             _self.bluetoothObj = new bluetooth();
 
-            /*
             // set parameters
             _self.bluetoothObj.deviceType = _self.deviceType;
             _self.bluetoothObj.listviewObj = $('#connectListView');
@@ -59,13 +56,14 @@ function application() {
             _self.bluetoothObj.callbacks.receiveCompleted = _self.receiveCompleted;
             _self.bluetoothObj.callbacks.dataArrival = _self.dataArrival;
             _self.bluetoothObj.callbacks.closeCompleted = _self.closeCompleted;
-            */
+            
             // initialize bluetooth
             _self.bluetoothObj.init();
 
             // Event when Connect item is clicked
             $(document).on('pageshow', '#connectPage', function (event, ui) {
-                _self.onConnectPageLoad();
+                //_self.onConnectPageLoad();
+                alert('pageConnect');
             });
 
             // Event when Connect page is closing
@@ -78,7 +76,7 @@ function application() {
             StatusBar.backgroundColorByHexString("#4444ff");
         }
         catch (e) {
-            _self.bluetoothObj.postMessage(e);
+            _self.displayMessage('onDeviceReady', e);
         }
     }
 
