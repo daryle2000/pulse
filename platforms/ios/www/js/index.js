@@ -163,11 +163,12 @@ function application() {
                     _self.responseObj.isTimedOut = (_self.responseObj.currentTime - _self.responseObj.startTime) >= BLUETOOTH.RECEIVE_TIMEOUT;
                 }
 
-                if (!_self.responseObj.isTimedOut && _self.responseObj.callback != null) {
+                if (_self.responseObj.isDataAvailable && !_self.responseObj.isTimedOut) {
                     var param = _self.dataReceived;
                     _self.dataReceived = '';
 
-                    _self.responseObj.callback(param);
+                    if (_self.responseObj.callback != null)
+                        _self.responseObj.callback(param);
                 }
             }
             catch (e) {
