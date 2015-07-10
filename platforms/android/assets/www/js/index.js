@@ -44,6 +44,8 @@ function application() {
         {
             _self.updateStatus();
             _self.deviceType = _self.getDeviceType();
+
+            /*
             _self.bluetoothObj = new bluetooth();
 
             // set parameters
@@ -59,11 +61,11 @@ function application() {
             
             // initialize bluetooth
             _self.bluetoothObj.init();
+            */
 
             // Event when Connect item is clicked
             $(document).on('pageshow', '#connectPage', function (event, ui) {
-                //_self.onConnectPageLoad();
-                alert('pageConnect');
+                _self.onConnectPageLoad();
             });
 
             // Event when Connect page is closing
