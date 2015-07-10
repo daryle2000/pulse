@@ -48,6 +48,7 @@ function application() {
 
             _self.bluetoothObj = new bluetooth();
 
+            /*
             // set parameters
             _self.bluetoothObj.deviceType = _self.deviceType;
             _self.bluetoothObj.listviewObj = $('#connectListView');
@@ -58,7 +59,7 @@ function application() {
             _self.bluetoothObj.callbacks.receiveCompleted = _self.receiveCompleted;
             _self.bluetoothObj.callbacks.dataArrival = _self.dataArrival;
             _self.bluetoothObj.callbacks.closeCompleted = _self.closeCompleted;
-
+            */
             // initialize bluetooth
             _self.bluetoothObj.init();
 
