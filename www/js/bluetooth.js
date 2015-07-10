@@ -359,6 +359,8 @@ function bluetooth(jqm_listview, deviceType)
     }
 
     this.receiveSuccess = function (result) {
+        _self.postMessage('receiveSuccess: ' + JSON.stringify(result));
+
         if (result.status == 'read')
         {
             _self.readResult.status = BLE.STATUS_RECEIVED;
