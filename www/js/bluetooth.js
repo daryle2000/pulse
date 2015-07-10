@@ -36,11 +36,13 @@ function bluetooth()
 
     // Callback
 
-    this.connectCompleteCallback = null;            // connectCallback(deviceObject);
-    this.sendCompleteCallback = null;               // sendCompleteCallback(deviceObject, writeResult); 
-    this.receiveCompleteCallback = null;            // receiveCompleteCallback(deviceObject, readResult);
-    this.dataArrivalCompleteCallback = null;        // dataArrivalCompleteCallback(deviceObject, subscriptionResult);
-    this.closeCompleteCallback = null;              // closeCompleteCallback(deviceObject);
+    this.callbacks = {
+        connectCompleted: null,                             // connectCompleted (deviceObject);
+        sendCompleted: null,                                // sendCompleted (deviceObject, writeResult); 
+        receiveCompleted: null,                             // receiveCompleted (deviceObject, readResult);
+        dataArrival: null,                                  // dataArrival (deviceObject, subscriptionResult);
+        closeCompleted: null                                // closeCompleted (deviceObject);
+    };
 
     this.errorResult = {
         error: 0,
