@@ -361,12 +361,18 @@ function bluetooth(jqm_listview, deviceType)
     this.receiveSuccess = function (result) {
         _self.postMessage('receiveSuccess: ' + JSON.stringify(result));
 
-        if (result.status == 'read')
+        try
         {
-            _self.readResult.status = BLE.STATUS_RECEIVED;
-            _self.readResult.value = bleutoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
+            if (result.status == 'read')
+            {
+                _self.readResult.status = BLE.STATUS_RECEIVED;
+                _self.readResult.value = bleutoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
 
-            _self.postMessage('Value ---> ' + _self.readResult.value);
+                _self.postMessage('Value ---> ' + _self.readResult.value);
+            }
+        }
+        catch (e) {
+            _self.postMessage('receiveSuccess Exception: ' + e);
         }
     }
 
