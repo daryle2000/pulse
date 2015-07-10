@@ -150,6 +150,7 @@ function application() {
             try
             {
                 _self.dataReceived += subscriptionResult.value;
+                _self.displayMessage('dataArrival: ', _self.dataReceived);
 
                 _self.responseObj.isDataAvailable = _self.dataReceived.endsWith('RES+OK') || _self.dataReceived.endsWith('RES+ERR');
 
