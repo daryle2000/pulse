@@ -25,6 +25,14 @@ var DEVICE_TYPE = {
     UNDETECTED: 'undetected'
 };
 
+var BLUETOOTH = {
+    RECEIVE_TIMEOUT: 1000            // receive timeout in milliseconds
+};
+
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
 function application() {
     this.bluetoothObj = null;
 
@@ -32,6 +40,7 @@ function application() {
     this.executeLabelObj = $('#executeLabel');
     this.executeMessageObj = $('#executeMessage');
     this.deviceType = '';
+    this.dataReceived = '';
 
     var _self = this;
     
@@ -81,6 +90,51 @@ function application() {
     }
 
     // ----------------------------------------------------------------------------------------------------------------
+    // Bluetooth Sending and Receiving
+    // ----------------------------------------------------------------------------------------------------------------
+
+    this.sendCommand = function (cmd) {
+        _self.dataReceived = '';
+        _self.bluetoothObj.sendToDevice(cmd);
+    }
+
+    this.getResponse = function () {
+        /*
+        ("RES+")	// respond signature
+        #define CMD_RES_OK					("RES+OK")
+        #define CMD_RES_ERR					("RES+ERR")
+        */
+        var startTime = Date.now();
+        var currentTime = startTime;
+        var isResponseAvailable = false;
+        var isTimedOut = false;
+
+        var lastCount = 0;
+        var ret = '';
+
+        while (!isTimedOut && !isResponseAvailable) {
+            isResponseAvailable = _self.dataReceived.endsWith('RES+OK') || _self.dataReceived.endsWith('RES+ERR');
+
+            if (_self.dataReceived.length > lastCount) {
+                lastCount = _self.dataReceived.length;
+                startTime = currentTime;
+            }
+
+            if (!isResponseAvailable) {
+                currentTime = Date.now();
+                isTimedOut = (currentTime - startTime) >= BLUETOOTH.RECEIVE_TIMEOUT;
+            }
+        }
+
+        if (!isTimedOut)
+            ret = _self.dataReceived;
+
+        _self.dataReceived = '';
+        return ret;
+    }
+
+
+    // ----------------------------------------------------------------------------------------------------------------
     // Bluetooth Callbacks
     // ----------------------------------------------------------------------------------------------------------------
 
@@ -90,7 +144,7 @@ function application() {
     }
 
     this.sendCompleted = function (deviceObject, writeResult) {
-        _self.displayMessage('sendCompleteCallback', writeResult.value);
+        _self.displayMessage('sendCompleted response: ', _self.getResponse());
     }
 
     this.receiveCompleted = function (deviceObject, readResult) {
@@ -98,7 +152,7 @@ function application() {
     }
 
     this.dataArrival = function (deviceObject, subscriptionResult) {
-        _self.displayMessage ('dataArrivalCompleteCallback', subscriptionResult.value);
+        _self.dataReceived += subscriptionResult.value;
     }
 
     this.closeCompleted = function (deviceObject) {
