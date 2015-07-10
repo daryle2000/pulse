@@ -47,7 +47,6 @@ function application() {
 
             _self.bluetoothObj = new bluetooth();
 
-            /*
             // set parameters
             _self.bluetoothObj.deviceType = _self.deviceType;
             _self.bluetoothObj.listviewObj = $('#connectListView');
@@ -61,7 +60,6 @@ function application() {
             
             // initialize bluetooth
             _self.bluetoothObj.init();
-            */
 
             // Event when Connect item is clicked
             $(document).on('pageshow', '#connectPage', function (event, ui) {

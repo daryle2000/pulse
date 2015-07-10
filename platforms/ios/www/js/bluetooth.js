@@ -26,7 +26,7 @@ function bluetooth()
     {
         var _self = this;
 
-        this.deviceType = deviceType;
+        this.deviceType = '';
         this.connectCallback = null;
         this.listviewObj = null;
 
@@ -494,6 +494,6 @@ function bluetooth()
         }
     }
     catch (e) {
-        alert(e);
+        navigator.notification.alert(e, null, 'bluetooth class');
     }
 }
