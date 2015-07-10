@@ -122,6 +122,8 @@ function bluetooth()
 
     this.initializeSuccess = function (result) {
         _self.isInitialized = true;
+
+        _self.postMessage('initializeSuccess: ' + JSON.stringify(result));
     }
 
     this.initializeError = function (result) {

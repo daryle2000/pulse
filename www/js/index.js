@@ -53,11 +53,11 @@ function application() {
             _self.bluetoothObj.listviewObj = $('#connectListView');
 
             // set callbacks
-            _self.bluetoothObj.callbacks.connectCompleted = connectCompleted;
-            _self.bluetoothObj.callbacks.sendCompleted = sendCompleted; 
-            _self.bluetoothObj.callbacks.receiveCompleted = receiveCompleted;
-            _self.bluetoothObj.callbacks.dataArrival = dataArrival;
-            _self.bluetoothObj.callbacks.closeCompleted = closeCompleted;
+            _self.bluetoothObj.callbacks.connectCompleted = _self.connectCompleted;
+            _self.bluetoothObj.callbacks.sendCompleted = _self.sendCompleted;
+            _self.bluetoothObj.callbacks.receiveCompleted = _self.receiveCompleted;
+            _self.bluetoothObj.callbacks.dataArrival = _self.dataArrival;
+            _self.bluetoothObj.callbacks.closeCompleted = _self.closeCompleted;
 
             // initialize bluetooth
             _self.bluetoothObj.init();
@@ -70,7 +70,6 @@ function application() {
             // Event when Connect page is closing
             $(document).on('pagehide', '#connectPage', function (event, ui) {
                 _self.stopScanningDevices();
-
             });
 
             StatusBar.show();
@@ -91,7 +90,7 @@ function application() {
         _self.bluetoothObj.sendToDevice('CMD+ULG;green');
     }
 
-    this.sendCompleted= function (deviceObject, writeResult) {
+    this.sendCompleted = function (deviceObject, writeResult) {
         _self.displayMessage('sendCompleteCallback', writeResult.value);
     }
 
@@ -131,6 +130,7 @@ function application() {
     // -------------------------------------------------------------------------------------------
 
     this.scanDevices = function () {
+        _self.displayMessage ('scanDevices','');
         _self.bluetoothObj.scanDevices();
     }
 
