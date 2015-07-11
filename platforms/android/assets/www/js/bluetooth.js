@@ -42,7 +42,7 @@ function bluetooth()
             connectCompleted: null,                             // connectCompleted (deviceObject);
             sendCompleted: null,                                // sendCompleted (deviceObject, writeResult); 
             receiveCompleted: null,                             // receiveCompleted (deviceObject, readResult);
-            dataArrival: null,                                  // dataArrival (deviceObject, subscriptionResult);
+            dataArrival: null,                                  // dataArrival (deviceObject, subscriptionResult, writeResult);
             closeCompleted: null                                // closeCompleted (deviceObject);
         };
 
@@ -370,7 +370,7 @@ function bluetooth()
                 case 'subscribedResult':
                     _self.subscriptionResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
                     if (_self.callbacks.dataArrival != null)
-                        _self.callbacks.dataArrival (_self.deviceObject, _self.subscriptionResult);
+                        _self.callbacks.dataArrival (_self.deviceObject, _self.subscriptionResult, _self.writeResult);
                     break;
             }
         }

@@ -68,7 +68,7 @@ function application() {
         this.onDeviceReady = function () {
             try
             {
-                _self.responseObj.callback = _self.responseInterpreter;
+                _self.responseObj.callback = _self.responseInterpreter;         // callback (command, response);
 
                 _self.updateStatus();
                 _self.deviceType = _self.getDeviceType();
@@ -128,10 +128,10 @@ function application() {
             _self.responseObj.isDataAvailable = false;
         }
 
-        this.responseInterpreter = function (response) {
+        this.responseInterpreter = function (command, response) {
             // This is where to interpret command responses
 
-            _self.displayMessage('responseIsAvailable', response);
+            _self.displayMessage('responseInterpreter', 'command: ' + command + '<br>response: ' + response);
         }
 
         // ----------------------------------------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ function application() {
             _self.displayMessage('receiveCompleteCallback', readResult.value);
         }
 
-        this.dataArrival = function (deviceObject, subscriptionResult) {
+        this.dataArrival = function (deviceObject, subscriptionResult, writeResult) {
             try
             {
                 _self.dataReceived += subscriptionResult.value;
@@ -168,11 +168,11 @@ function application() {
                 }
 
                 if (_self.responseObj.isDataAvailable) {
-                    var param = _self.dataReceived;
+                    var response = _self.dataReceived;
                     _self.dataReceived = '';
 
                     if (_self.responseObj.callback != null)
-                        _self.responseObj.callback(param);
+                        _self.responseObj.callback(writeResult.value, response);
                 }
             }
             catch (e) {
