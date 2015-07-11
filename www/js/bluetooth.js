@@ -217,7 +217,7 @@ function bluetooth()
         }
 
         this.stopScanSuccess = function () {
-            _self.postMessage('Scanning has stopped!');
+            //_self.postMessage('Scanning has stopped!');
         }
 
         // ----------------------------------------------------------------------------------------------------------------

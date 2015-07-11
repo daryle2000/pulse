@@ -161,7 +161,7 @@ function application() {
         // ----------------------------------------------------------------------------------------------------------------
 
         this.connectCompleted = function (deviceObject) {
-            _self.displayMessage('connectCompleteCallback', deviceObject.name + ' is now connected!');
+            //_self.displayMessage('connectCompleteCallback', deviceObject.name + ' is now connected!');
             _self.bluetoothObj.sendToDevice('CMD+ULG;green');
         }
 
