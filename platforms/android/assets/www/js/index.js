@@ -152,6 +152,7 @@ function application() {
                 _self.dataReceived += subscriptionResult.value;
 
                 _self.responseObj.isDataAvailable = _self.dataReceived.endsWith('RES+OK') || _self.dataReceived.endsWith('RES+ERR');
+                _self.displayMessage('dataArrival: ', _self.dataReceived + ' ' + _self.responseObj.isDataAvailable);
 
                 if (_self.dataReceived.length > _self.responseObj.lastCount) {
                     _self.responseObj.lastCount = _self.dataReceived.length;
@@ -163,7 +164,7 @@ function application() {
                     _self.responseObj.isTimedOut = (_self.responseObj.currentTime - _self.responseObj.startTime) >= BLUETOOTH.RECEIVE_TIMEOUT;
                 }
 
-                if (_self.responseObj.isDataAvailable && !_self.responseObj.isTimedOut) {
+                if (_self.responseObj.isDataAvailable) {
                     var param = _self.dataReceived;
                     _self.dataReceived = '';
 
