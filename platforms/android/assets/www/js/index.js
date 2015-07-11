@@ -155,9 +155,7 @@ function application() {
             try
             {
                 _self.dataReceived += subscriptionResult.value;
-
                 _self.responseObj.isDataAvailable = _self.dataReceived.endsWith(CONSTANTS.RESPONSE_OK) || _self.dataReceived.endsWith(CONSTANTS.RESPONSE_ERR);
-                _self.displayMessage('dataArrival: ', _self.dataReceived + ' ' + _self.responseObj.isDataAvailable);
 
                 if (_self.dataReceived.length > _self.responseObj.lastCount) {
                     _self.responseObj.lastCount = _self.dataReceived.length;
