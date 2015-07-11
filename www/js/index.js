@@ -184,7 +184,21 @@ function application() {
             _self.displayMessage('closeCompleteCallback', deviceObject.name + ' is disconnected!');
         }
 
-        // ---
+        // -------------------------------------------------------------------------------------------
+        // Bluetooth/Host Functions
+        // -------------------------------------------------------------------------------------------
+
+        this.scanDevices = function () {
+            _self.bluetoothObj.scanDevices();
+        }
+
+        this.stopScanningDevices = function () {
+            _self.bluetoothObj.stopScan();
+        }
+
+        // -------------------------------------------------------------------------------------------
+        // Sprinkler Functions
+        // -------------------------------------------------------------------------------------------
 
         this.updateStatus = function () {
             // ---
@@ -203,21 +217,6 @@ function application() {
             _self.scanDevices();
         }
 
-        // -------------------------------------------------------------------------------------------
-        // Bluetooth Functions
-        // -------------------------------------------------------------------------------------------
-
-        this.scanDevices = function () {
-            _self.bluetoothObj.scanDevices();
-        }
-
-        this.stopScanningDevices = function () {
-            _self.bluetoothObj.stopScan();
-        }
-
-        // -------------------------------------------------------------------------------------------
-        // Sprinkler Functions
-        // -------------------------------------------------------------------------------------------
         this.executeMode = function () {
             if (_self.isRunning)
                 _self.stop();
