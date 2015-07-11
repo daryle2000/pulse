@@ -34,6 +34,10 @@ var CONSTANTS = {
     RESPONSE_ERR: 'RES+ERR\r\n'
 };
 
+String.prototype.startsWith = function (prefix) {
+    return this.indexOf(prefix) === 0;
+}
+
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
@@ -131,7 +135,25 @@ function application() {
         this.responseInterpreter = function (command, response) {
             // This is where to interpret command responses
 
-            _self.displayMessage('responseInterpreter', 'command: ' + command + '\r\nresponse: ' + response);
+            _self.displayMessage('responseInterpreter', 'command: ' + command + '\r\n\r\nresponse: ' + response);
+
+            // Login and Logout
+            if (command.startsWith('CMD+ULG')) {
+                if (command.startsWith('CMD+ULG;')) {
+                    // Login
+                    // Test after login
+                    setTimeout(function () {
+                        _self.sendCommand('CMD+RTT');
+                    }, 100);
+                }
+                else {
+                    // Logout
+                }
+            }
+
+            // Get time
+            if (command == 'CMD+RTT') {
+            }
         }
 
         // ----------------------------------------------------------------------------------------------------------------
