@@ -29,6 +29,11 @@ var BLUETOOTH = {
     RECEIVE_TIMEOUT: 1000            // receive timeout in milliseconds
 };
 
+var CONSTANTS = {
+    RESPONSE_OK: 'RES+OK\r\n', 
+    RESPONSE_ERR: 'RES+ERR\r\n'
+};
+
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
@@ -151,7 +156,7 @@ function application() {
             {
                 _self.dataReceived += subscriptionResult.value;
 
-                _self.responseObj.isDataAvailable = _self.dataReceived.endsWith('RES+OK') || _self.dataReceived.endsWith('RES+ERR');
+                _self.responseObj.isDataAvailable = _self.dataReceived.endsWith(CONSTANTS.RESPONSE_OK) || _self.dataReceived.endsWith(CONSTANTS.RESPONSE_ERR);
                 _self.displayMessage('dataArrival: ', _self.dataReceived + ' ' + _self.responseObj.isDataAvailable);
 
                 if (_self.dataReceived.length > _self.responseObj.lastCount) {
