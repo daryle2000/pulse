@@ -238,6 +238,7 @@ function bluetooth()
                         // Create object to display status
                         var statusObject = $('<span>Status Here</span>');
                         _self.deviceObject.statusObject = statusObject;
+                        _self.deviceObjectj.itemObject.append(_self.deviceObject.statusObject);
 
                         // connect to current selected device
                         _self.connectToBluetoothDevice();
