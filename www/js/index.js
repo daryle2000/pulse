@@ -131,7 +131,7 @@ function application() {
         this.responseInterpreter = function (command, response) {
             // This is where to interpret command responses
 
-            _self.displayMessage('responseInterpreter', 'command: ' + command + '<br>response: ' + response);
+            _self.displayMessage('responseInterpreter', 'command: ' + command + '\r\nresponse: ' + response);
         }
 
         // ----------------------------------------------------------------------------------------------------------------
