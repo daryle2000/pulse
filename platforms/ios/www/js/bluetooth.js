@@ -176,6 +176,7 @@ function bluetooth()
                                       'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
                     var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
+                    itemObject.append ($('<span>Status Here</span>'));
 
                     // append <li> element to <ul> listview
                     _self.listviewObj.append(itemObject);
@@ -225,27 +226,27 @@ function bluetooth()
         // ----------------------------------------------------------------------------------------------------------------
 
         this.selectBluetoothDevice = function (deviceIndex) {
-            // get the device object
-            _self.deviceObject = _self.bluetoothDevices[deviceIndex];
+            try
+            {
+                _self.deviceObject = _self.bluetoothDevices[deviceIndex];
 
-            navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
-                function (result) {
-                    if (result == 1) {
-                        // Clear device status and error
-                        _self.clearError();
-                        _self.clearCurrentDeviceStatus();
+                navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
+                    function (result) {
+                        if (result == 1) {
+                            // Clear device status and error
+                            _self.clearError();
+                            _self.clearCurrentDeviceStatus();
 
-                        // Create object to display status
-                        var statusObject = $('<span>Status Here</span>');
-                        _self.deviceObject.statusObject = statusObject;
-                        _self.deviceObjectj.itemObject.append(_self.deviceObject.statusObject);
-
-                        // connect to current selected device
-                        _self.connectToBluetoothDevice();
-                    }
-                },
-                'BLE Connect',
-                'Connect,Cancel');
+                            // connect to current selected device
+                            _self.connectToBluetoothDevice();
+                        }
+                    },
+                    'BLE Connect',
+                    'Connect,Cancel');
+            }
+            catch (e) {
+                _self.raiseError('selectBluetoothDevice', e);
+            }
         }
 
         this.connectToBluetoothDevice = function () {
