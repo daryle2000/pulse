@@ -178,8 +178,8 @@ function bluetooth()
                                       'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
                     var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
-                    var statusObjectId = 'stat_' + _self.scanCount.toString();
-                    itemObject.append('<span id=\'' + statusObjectId + '\'></span>');
+                    var statusId = 'stat_' + _self.scanCount.toString();
+                    itemObject.append('<span id=\'' + statusId + '\'></span>');
 
                     // append <li> element to <ul> listview
                     _self.listviewObj.append(itemObject);
@@ -190,9 +190,9 @@ function bluetooth()
                         name: result.name,
                         rssi: result.rssi,
                         itemObject: itemObject,
-                        statusObjectId: statusObjectId,
+                        statusObjectId: statusId,
                         getStatusObject: function () {
-                            return itemObject.find('#' + statusObjectId);
+                            return itemObject.find('#' + this.statusObjectId);
                         },
                         isConnected: false,
                         isDiscovered: false,
