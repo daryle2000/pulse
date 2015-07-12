@@ -241,6 +241,11 @@ function bluetooth()
                 navigator.notification.confirm('Connect to ' + _self.deviceObject.name + '?',
                     function (result) {
                         if (result == 1) {
+                            var statusObject = _self.deviceObject.getStatusObject();
+
+                            statusObject.css('color', '#0000ff');
+                            statusObject.html('Connecting ...')
+
                             // Clear device status and error
                             _self.clearError();
                             _self.clearCurrentDeviceStatus();
@@ -263,11 +268,10 @@ function bluetooth()
         }
 
         this.connectSuccess = function (result) {
+            var statusObject = _self.deviceObject.getStatusObject();
             switch (result.status) {
                 case 'connected':
-                    //var statusObj = _self.deviceObject.itemObject.find('#' + _self.deviceObject.statusObjectId);
-                    var statusObj = _self.deviceObject.getStatusObject();
-                    statusObj.html('Discovering Services Now...');
+                    statusObject.html('Discovering Services ...');
 
                     _self.deviceObject.isConnected = true;
                     _self.discoverServices();
@@ -275,10 +279,13 @@ function bluetooth()
 
                 case 'connecting':
                     _self.deviceObject.itemObject.css('background-color', '#ffffaa');
-                    _self.deviceObject.statusObject.html('Connecting ...');
+                    statusObject.statusObject.html('Connecting ...');
                     break;
 
                 case 'disconnected':
+                    statusObject.css('color', '#bb0000');
+                    statusObject.html('Connecting ...');
+
                     _self.deviceObject.itemObject.css('background-color', '#ff5555');
                     _self.deviceObject.isConnected = false;
                     _self.deviceObject.isDiscovered = false;
@@ -355,7 +362,9 @@ function bluetooth()
         this.subscribe = function () {
             try
             {
-                _self.deviceObject.statusObject.html('Connected');
+                var statusObject = _self.deviceObject.getStatusObject();
+                statusObject.html('Subscribing ...');
+
                 _self.deviceObject.itemObject.css('background-color', '#99ff99');
 
                 var params = {
@@ -378,6 +387,9 @@ function bluetooth()
         this.subscribeSuccess = function (result) {
             switch (result.status) {
                 case 'subscribed':
+                    var statusObject = _self.deviceObject.getStatusObject();
+                    statusObject.html('Connected');
+
                     _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBED;
                     _self.deviceObject.isSubscribed = true;
 
