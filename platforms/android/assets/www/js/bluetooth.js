@@ -258,13 +258,13 @@ function bluetooth()
             switch (result.status) {
                 case 'connected':
                     _self.deviceObject.isConnected = true;
-                    _self.deviceObject.statusObject.text('Discovering Services ...');
+                    _self.deviceObject.statusObject.html('Discovering Services ...');
                     _self.discoverServices();
                     break;
 
                 case 'connecting':
                     _self.deviceObject.itemObject.css('background-color', '#ffffaa');
-                    _self.deviceObject.statusObject.text('Connecting ...');
+                    _self.deviceObject.statusObject.html('Connecting ...');
                     break;
 
                 case 'disconnected':
@@ -342,7 +342,7 @@ function bluetooth()
         // ----------------------------------------------------------------------------------------------------------------
 
         this.subscribe = function () {
-            _self.deviceObject.statusObject.text('Connected');
+            _self.deviceObject.statusObject.html('Connected');
             _self.deviceObject.itemObject.css('background-color', '#99ff99');
 
             var params = {
