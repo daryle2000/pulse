@@ -31,6 +31,7 @@ function bluetooth()
         this.listviewObj = null;
 
         this.isScanning = false;
+        this.scanCount = 0;
         this.isInitialized = false;
 
         this.bluetoothDevices = [];
@@ -76,6 +77,7 @@ function bluetooth()
         }
 
         this.clearDeviceList = function () {
+            _self.scanCount = 0;
             _self.bluetoothDevices.length = 0;    // clear array
             _self.listviewObj.empty();
         }
@@ -176,7 +178,8 @@ function bluetooth()
                                       'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
                     var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
-                    var statusObject = $('<span>Status Here</span>');
+                    var statusObjectId = 'stat_' + _self.scanCount.toString();
+                    var statusObject = $('<span id=\'' + statusObjectId + '\'>Status Here</span>');
                     itemObject.append(statusObject);
 
                     // append <li> element to <ul> listview
@@ -189,6 +192,7 @@ function bluetooth()
                         rssi: result.rssi,
                         itemObject: itemObject,
                         statusObject: statusObject,
+                        statusObjectId: statusObjectId,
                         isConnected: false,
                         isDiscovered: false,
                         isSubscribed: false
@@ -196,6 +200,7 @@ function bluetooth()
 
                     // add to device array
                     _self.bluetoothDevices.push(device);
+                    _self.scanCount ++;
 
                     itemObject.unbind('click');
                     itemObject.click(function () {
@@ -259,7 +264,9 @@ function bluetooth()
             switch (result.status) {
                 case 'connected':
                     _self.deviceObject.isConnected = true;
-                    _self.deviceObject.statusObject.html('Discovering Services ...');
+                    var obj = _self.deviceObject.itemObject.find('#' + _self.deviceObject.statusObjectId);
+                    obj.html('Discovering Services ...');
+                    //_self.deviceObject.statusObject.html('Discovering Services ...');
                     _self.discoverServices();
                     break;
 
