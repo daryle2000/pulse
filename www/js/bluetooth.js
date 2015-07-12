@@ -179,8 +179,7 @@ function bluetooth()
 
                     var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
                     var statusObjectId = 'stat_' + _self.scanCount.toString();
-                    var statusObject = $('<span id=\'' + statusObjectId + '\'>Status Here</span>');
-                    itemObject.append(statusObject);
+                    itemObject.append('<span id=\'' + statusObjectId + '\'></span>');
 
                     // append <li> element to <ul> listview
                     _self.listviewObj.append(itemObject);
@@ -191,11 +190,14 @@ function bluetooth()
                         name: result.name,
                         rssi: result.rssi,
                         itemObject: itemObject,
-                        statusObject: statusObject,
                         statusObjectId: statusObjectId,
+                        getStatusObject: function () {
+                            return itemObject.find('#' + statusObjectId);
+                        },
                         isConnected: false,
                         isDiscovered: false,
                         isSubscribed: false
+
                     };
 
                     // add to device array
@@ -263,10 +265,11 @@ function bluetooth()
         this.connectSuccess = function (result) {
             switch (result.status) {
                 case 'connected':
+                    //var statusObj = _self.deviceObject.itemObject.find('#' + _self.deviceObject.statusObjectId);
+                    var statusObj = _self.deviceObject.getStatusObject();
+                    statusObj.html('Discovering Services Now...');
+
                     _self.deviceObject.isConnected = true;
-                    var obj = _self.deviceObject.itemObject.find('#' + _self.deviceObject.statusObjectId);
-                    obj.html('Discovering Services ...');
-                    //_self.deviceObject.statusObject.html('Discovering Services ...');
                     _self.discoverServices();
                     break;
 
