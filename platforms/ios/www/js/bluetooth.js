@@ -176,7 +176,8 @@ function bluetooth()
                                       'ADDRESS: <span style=\'color:#aa0000\'>' + result.address + '</span><br>';
 
                     var itemObject = $('<li class=\'wrap\'>' + itemContent + '</li><br>');
-                    itemObject.append ($('<span>Status Here</span>'));
+                    var statusObject = $('<span>Status Here</span>');
+                    itemObject.append(statusObject);
 
                     // append <li> element to <ul> listview
                     _self.listviewObj.append(itemObject);
@@ -187,7 +188,7 @@ function bluetooth()
                         name: result.name,
                         rssi: result.rssi,
                         itemObject: itemObject,
-                        statusObject: null,
+                        statusObject: statusObject,
                         isConnected: false,
                         isDiscovered: false,
                         isSubscribed: false
@@ -342,20 +343,26 @@ function bluetooth()
         // ----------------------------------------------------------------------------------------------------------------
 
         this.subscribe = function () {
-            _self.deviceObject.statusObject.html('Connected');
-            _self.deviceObject.itemObject.css('background-color', '#99ff99');
+            try
+            {
+                _self.deviceObject.statusObject.html('Connected');
+                _self.deviceObject.itemObject.css('background-color', '#99ff99');
 
-            var params = {
-                address: _self.deviceObject.address,
-                serviceUuid: BLE.SERVICE_UUID,
-                characteristicUuid: BLE.CHARACTERISTIC_UUID,
-                isNotification: true
-            };
+                var params = {
+                    address: _self.deviceObject.address,
+                    serviceUuid: BLE.SERVICE_UUID,
+                    characteristicUuid: BLE.CHARACTERISTIC_UUID,
+                    isNotification: true
+                };
 
-            _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBING;
-            _self.subscriptionResult.value = '';
+                _self.subscriptionResult.status = BLE.STATUS_SUBSCRIBING;
+                _self.subscriptionResult.value = '';
 
-            bluetoothle.subscribe(_self.subscribeSuccess, _self.errorHandler, params);
+                bluetoothle.subscribe(_self.subscribeSuccess, _self.errorHandler, params);
+            }
+            catch (e) {
+                _self.raiseError('subscribe', e);
+            }
         }
 
         this.subscribeSuccess = function (result) {
