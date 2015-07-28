@@ -5,8 +5,10 @@
 // ----------------------------------------------------------------------------------------------------------------
 
 var BLE = {
-    SERVICE_UUID: 'ffe0',
-    CHARACTERISTIC_UUID: 'ffe1',
+    //SERVICE_UUID: 'ffe0',           // RN4020 00035b03-58e6-07dd-021a-08123a000300
+    //CHARACTERISTIC_UUID: 'ffe1',    // RN4020 00035b03-58e6-07dd-021a-08123a000301
+    SERVICE_UUID: '00035b03-58e6-07dd-021a-08123a000300',
+    CHARACTERISTIC_UUID: '00035b03-58e6-07dd-021a-08123a000301',
     STATUS_ERROR: -1,
     STATUS_NOERROR: 0,
     STATUS_NONE: 0,
