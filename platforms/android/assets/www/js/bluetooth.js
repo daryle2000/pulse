@@ -324,7 +324,6 @@ function bluetooth()
         // Discover ANDROID
         // ----------------------------------------------------------------------------------------------------------------
         this.discoverServicesSuccess = function (result) {
-            _self.postMessage('discoverServicesSuccess: ' + JSON.stringify(result));
             _self.deviceObject.isDiscovered = true;
             _self.subscribe();
         }
@@ -402,8 +401,6 @@ function bluetooth()
                     break;
 
                 case 'subscribedResult':
-                    //{}
-                    _self.postMessage('subscribedResult: ' + JSON.stringify(result));
                     _self.subscriptionResult.value = bluetoothle.bytesToString(bluetoothle.encodedStringToBytes(result.value));
                     if (_self.callbacks.dataArrival != null)
                         _self.callbacks.dataArrival (_self.deviceObject, _self.subscriptionResult, _self.writeResult);
