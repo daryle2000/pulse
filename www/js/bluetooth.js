@@ -322,6 +322,7 @@ function bluetooth()
         // Discover ANDROID
         // ----------------------------------------------------------------------------------------------------------------
         this.discoverServicesSuccess = function (result) {
+            _self.postMessage('discoverServicesSuccess: ' + JSON.stringify(result));
             _self.deviceObject.isDiscovered = true;
             _self.subscribe();
         }
